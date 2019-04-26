@@ -14,6 +14,9 @@ setup(
     license="Apache 2.0",
     zip_safe=False,
     url="http://github.com/socek/iep",
+    entry_points={
+        "paste.app_factory": ["main = iep.application.startpoints:wsgi"]
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",

@@ -4,14 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sapp = "==0.2"
+sapp = "==0.3"
 python-decouple = "*"
 ipython = "*"
 pyramid = "*"
+marshmallow = "*"
+sqlalchemy = "*"
+uwsgi = "*"
 
 [dev-packages]
 ipython = "*"
 ipdb = "*"
+pytest = "*"
+pytest-cov = "*"
+undecorated = "*"
+webtest = "*"
+alembic = "*"
 
 [requires]
 python_version = "3.7"
