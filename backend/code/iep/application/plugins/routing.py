@@ -1,6 +1,7 @@
 from sapp.plugins.pyramid.routing import Routing
+from iep.auth.routing import auth_routing
 
 
 class IAPRouting(Routing):
     def make(self):
-        pass
+        auth_routing(self)

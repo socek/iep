@@ -7,6 +7,7 @@ from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import MetaData
+# from venusian import attach
 
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
@@ -20,7 +21,6 @@ NAMING_CONVENTION = {
 }
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
-
 
 class Base(object):
     uid = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)

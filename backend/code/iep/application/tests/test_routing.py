@@ -22,4 +22,4 @@ class TestIAPRouting(object):
         """
         IAPRouting(mwsgi).make()
 
-        madd.assert_not_called()
+        madd.assert_called()

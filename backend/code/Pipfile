@@ -12,6 +12,9 @@ marshmallow = "*"
 sqlalchemy = "*"
 uwsgi = "*"
 psycopg2 = "*"
+venusian = "*"
+bcrypt = "*"
+pyjwt = "*"
 
 [dev-packages]
 ipython = "*"

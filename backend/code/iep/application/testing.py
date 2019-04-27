@@ -85,21 +85,29 @@ class IAPFixturesMixin(object):
     def user_command(self, app):
         return UserCommand(app.dbsession)
 
-    @fixture(scope="class")
-    def user(self, user_command, email=None):
-        uid = uuid4()
+    def _create_user(self, uid, email=None):
         user_data = dict(self.user_data)
         user_data["email"] = email or user_data["email"]
         password_txt = user_data.pop("password")
         user = User(uid, **user_data)
         user.set_password(password_txt)
+        return user
+
+    @fixture(scope="class")
+    def user(self, user_command, email=None):
+        uid = uuid4()
+        user = self._create_user(uid)
         user_command.create(user)
         yield user
         user_command.force_delete(uid)
 
     @fixture
     def dynamic_user(self, user_command):
-        yield from self.user(user_command, "dynamic@gmail.com")
+        uid = uuid4()
+        user = self._create_user(uid, "dynamic@gmail.com")
+        user_command.create(user)
+        yield user
+        user_command.force_delete(uid)
 
     @fixture(scope="class")
     def second_user(self, user_command):

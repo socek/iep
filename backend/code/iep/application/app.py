@@ -1,3 +1,4 @@
+from sapp.plugins.json import JsonPlugin
 from sapp.plugins.logging import LoggingPlugin
 from sapp.plugins.pyramid.configurator import ConfiguratorWithPyramid
 from sapp.plugins.pyramid.plugins import RoutingPlugin
@@ -13,3 +14,4 @@ class IAPConfigurator(ConfiguratorWithPyramid):
         self.add_plugin(LoggingPlugin())
         self.add_plugin(DatabasePlugin("dbsession"))
         self.add_plugin(RoutingPlugin(IAPRouting))
+        self.add_plugin(JsonPlugin())
