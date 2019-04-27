@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik # The official Traefik docker image
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"     # The HTTP port
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+
+  backend:
+    build: backend
+    env_file: .env
+    volumes:
+      - ./backend/code:/code
+    labels:
+      - "traefik.frontend.rule=Host:localhost;PathPrefixStrip:/api"
+      - "traefik.port=8000"
+      - "traefik.enable=true"
+
+  postgres:
+    image: postgres:10.1
+    env_file: .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sapp = "==0.3"
+python-decouple = "*"
+ipython = "*"
+pyramid = "*"
+marshmallow = "*"
+sqlalchemy = "*"
+uwsgi = "*"
+psycopg2 = "*"
+
+[dev-packages]
+ipython = "*"
+ipdb = "*"
+pytest = "*"
+pytest-cov = "*"
+undecorated = "*"
+webtest = "*"
+alembic = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
