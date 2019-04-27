@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import store from '@/store'
 
 import NotLoggedIn from '@/auth/not-logged-in'
+import Home from '@/home/home'
 
 Vue.use(Router)
 
@@ -21,7 +22,7 @@ export function requireAuth (to, from, next) {
 function onlyNotLoggedIn (to, from, next) {
   if (store.getters['auth/isAuthenticated']) {
     next({
-      name: 'NotLoggedIn' // TODO: fix this
+      name: 'NotLoggedIn'
     })
   } else {
     next()
@@ -35,6 +36,12 @@ let router = new Router({
       name: 'NotLoggedIn',
       component: NotLoggedIn,
       beforeEnter: onlyNotLoggedIn
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home,
+      beforeEnter: requireAuth
     }
   ]
 })
