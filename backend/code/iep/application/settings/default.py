@@ -6,7 +6,7 @@ def default():
     settings = {"paths": PrefixedStringsDict("/code/")}
     alembic(settings)
     logging(settings)
-    # database(settings)
+    database(settings)
     jwt(settings)
     return settings
 

@@ -11,5 +11,5 @@ class IAPConfigurator(ConfiguratorWithPyramid):
     def append_plugins(self):
         self.add_plugin(SettingsPlugin("iep.application.settings"))
         self.add_plugin(LoggingPlugin())
-        # self.add_plugin(DatabasePlugin("dbsession"))
+        self.add_plugin(DatabasePlugin("dbsession"))
         self.add_plugin(RoutingPlugin(IAPRouting))

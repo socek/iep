@@ -1,0 +1,12 @@
+BACKEND_DB_URL=postgresql://iap:iap@postgres:5432/iap
+BACKEND_DB_TEST_URL=postgresql://iap:iap@postgres:5432/iap_test
+BACKEND_DB_DEFAULT_URL=postgresql://iap:iap@postgres:5432/postgres
+
+POSTGRES_PASSWORD=iap
+POSTGRES_USER=iap
+POSTGRES_DB=iap
+PGPASSWORD=iap
+
+JWT_SECRET=d13fb0677f004dcca3bf8d20d8e25027
+SESSION_SECRET=changeme
+SECRET=changeme

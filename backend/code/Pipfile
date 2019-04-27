@@ -11,6 +11,7 @@ pyramid = "*"
 marshmallow = "*"
 sqlalchemy = "*"
 uwsgi = "*"
+psycopg2 = "*"
 
 [dev-packages]
 ipython = "*"

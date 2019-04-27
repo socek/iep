@@ -22,7 +22,6 @@ RUN pip install pipenv
 
 # Install dependencies
 USER user
-COPY --chown=user:user bashrc /home/user/.bashrc
 COPY --chown=user:user code/Pipfile $APP_DIR
 COPY --chown=user:user code/Pipfile.lock $APP_DIR
 RUN pipenv install --dev
