@@ -43,7 +43,9 @@ class Base(object):
         """
         Get all Column names declarated in the Model.
         """
-        return [column.key for column in self.__table__.columns]
+        return [
+            column.key for column in self.__table__.columns if column.key != "is_active"
+        ]
 
     def to_dict(self):
         """
