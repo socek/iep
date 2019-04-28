@@ -11,9 +11,11 @@ class Panel(Model):
         description=None,
         additional=None,
         creator=None,
+        room=None,
     ):
         super().__init__(uid, created_at, updated_at)
         self.name = name
         self.description = description
         self.additional = additional
         self.creator = creator
+        self.room = room

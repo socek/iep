@@ -15,4 +15,5 @@ class PanelData(SqlDataModel):
     description = Column(String)
     additional = Column(String)
     creator = Column(String)
+    room = Column(String)
 
