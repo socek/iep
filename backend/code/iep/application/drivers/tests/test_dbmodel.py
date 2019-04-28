@@ -6,9 +6,9 @@ from iep.application.drivers.dbmodel import Base
 
 
 class TestBase(object):
-    def test_update_model(self):
+    def test_update_model_after_commit(self):
         """
-        .update_model should update values in provided model
+        ._update_model_after_commit should update values in provided model
         """
         model = MagicMock()
         base = Base()
@@ -18,7 +18,7 @@ class TestBase(object):
         base.created_at = datetime.now()
         base.updated_at = datetime.now()
 
-        base.update_model(model)
+        base._update_model_after_commit(model)
 
         assert model.uid == base.uid
         assert model.created_at == base.created_at

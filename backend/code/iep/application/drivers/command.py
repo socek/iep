@@ -14,10 +14,10 @@ class Command(BaseCommand):
 
     def create(self, model):
         obj = self.model()
-        obj.from_model(model)
+        obj.from_object(model)
         self.database.add(obj)
         self.database.commit()
-        obj.update_model(model)
+        obj._update_model_after_commit(model)
 
     def _update_by_uid(self, uid, update):
         update_raw = {}

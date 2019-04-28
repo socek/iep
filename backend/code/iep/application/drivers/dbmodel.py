@@ -21,17 +21,52 @@ NAMING_CONVENTION = {
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
+
 class Base(object):
+    _model = None
     uid = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
 
     is_active = Column(Boolean, default=True, nullable=False, server_default="true")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def update_model(self, model):
+    def _update_model_after_commit(self, model):
+        """
+        Update uid, created_at and updated at parameters after commit. This
+        are the only parameters that can change during commit.
+        """
         model.uid = self.uid
         model.created_at = self.created_at
         model.updated_at = self.updated_at
+
+    def _get_all_column_names(self):
+        """
+        Get all Column names declarated in the Model.
+        """
+        return [column.key for column in self.__table__.columns]
+
+    def to_dict(self):
+        """
+        Get all data from the SqlDataModel and return it in the form of dict.
+        """
+        data = {}
+        for name in self._get_all_column_names():
+            data[name] = getattr(self, name)
+        return data
+
+    def to_model(self):
+        """
+        Create normal model from the SqlDataModel.
+        """
+        return self._model(**self.to_dict())
+
+    def from_object(self, obj):
+        """
+        Update SqlDataModel from normal model.
+        """
+        for name in self._get_all_column_names():
+            value = getattr(obj, name)
+            setattr(self, name, value)
 
 
 SqlDataModel = declarative_base(metadata=metadata, cls=Base)
