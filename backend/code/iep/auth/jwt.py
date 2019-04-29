@@ -1,12 +1,11 @@
 from jwt import decode
 from jwt import encode
 
-from sapp.decorators import WithContext
-
 from iep import app
+from iep.application.app import Decorator
 
 
-@WithContext(app, args=["settings"])
+@Decorator(app, "settings")
 def encode_jwt_from_user(user, settings):
     payload = {"uid": user.uid}
     return encode(
@@ -14,6 +13,6 @@ def encode_jwt_from_user(user, settings):
     ).decode("utf8")
 
 
-@WithContext(app, args=["settings"])
+@Decorator(app, "settings")
 def decode_jwt(token, settings):
     return decode(token, settings["jwt:secret"], algorithms=[settings["jwt:algorithm"]])

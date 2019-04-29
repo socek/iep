@@ -1,3 +1,4 @@
+from collections import Iterable
 from inspect import isfunction
 from inspect import ismethod
 
@@ -13,101 +14,87 @@ from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 from iep.application.plugins.routing import IAPRouting
 
 
-class ContextGenerator(object):
-    def __init__(self, configurator, args=None):
-        self.configurator = configurator
-        self.fun = self._extract_fun_from(args)
-        self.args = args or []
-        if self.fun:
-            self.args = self.args[1:]
-
-    def __enter__(self):
-        ctx = self.configurator.__enter__()
-        if len(self.args) == 0:
-            return ctx
-        elif len(self.args) == 1:
-            return getattr(ctx, self.args[0])
-        else:
-            return [getattr(ctx, arg) for arg in self.args]
-
-    def __exit__(self, *args, **kwargs):
-        ctx = self.configurator.__exit__(*args, **kwargs)
-
-    def _extract_fun_from(self, args):
-        fun = len(args) == 1 and args[0] or None
-        if fun and (isfunction(fun) or ismethod(fun)):
-            return fun
-
-    def __call__(self, *args, **kwargs):
-        """
-        This is called when Configurator is used as decorator.
-        """
-        fun = self._extract_fun_from(args)
-
-        if fun:
-            args = args[1:]
-
-            def wrapper(*margs, **mkwargs):
-                if len(self.args) <= 1:
-                    # It was called as @app()
-                    with self as ctx:
-                        return fun(ctx, *margs, **mkwargs)
-                else:
-                    # It was called as @app(*args)
-                    with self as ctx:
-                        sargs = []
-                        sargs.extend(ctx)
-                        sargs.extend(margs)
-                        return fun(*sargs, **mkwargs)
-
-            return wrapper
-        elif self.fun:
-            # It was called as @app
-            with self as ctx:
-                return self.fun(ctx, *args, **kwargs)
-        else:
-            raise RuntimeError("You can not call an application!")
-
-
 class BaseIAPConfigurator(ConfiguratorWithPyramid):
     def __init__(self):
         self.is_started = False
         self.startpoint = None
         self.plugins = []
-        self.context_count = 0
+
+        self.context_counter = 0
         self.context = None
 
     def _start_plugins(self):
         for plugin in self.plugins:
             plugin.start(self)
 
-    def create_context(self):
-        if not self.is_started:
-            raise ConfiguratorNotStartedError(
-                "Configurator is not started! Use Configurator.start(startpoint)"
-            )
+    def add_plugin(self, plugin):
+        self.plugins.append(plugin)
 
-        self.context_count += 1
+    def _enter_context(self):
+        self.context_counter += 1
         if not self.context:
             self.context = Context(self)
             self.context.enter()
         return self.context
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.context_count -= 1
-        if self.context_count == 0:
+    def _exit_context(self, exc_type, exc_value, traceback):
+        self.context_counter -= 1
+        if self.context_counter == 0:
             self.context.exit(exc_type, exc_value, traceback)
 
-    def add_plugin(self, plugin):
-        self.plugins.append(plugin)
 
-    def __call__(self, *args):
-        return ContextGenerator(self, args)
+class ContextManager(object):
+    def __init__(self, application, values=[]):
+        self.application = application
+        self.values = values
+        self.context = None
 
     def __enter__(self):
-        return self.create_context()
+        ctx = self.application._enter_context()
+        if not self.values:
+            return ctx
+        elif isinstance(self.values, str):
+            return getattr(ctx, self.values)
+        elif isinstance(self.values, Iterable):
+            return [getattr(ctx, key) for key in self.values]
+        else:
+            raise RuntimeError("Wrong argument type!")
 
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.application._exit_context(exc_type, exc_value, traceback)
+
+
+class Decorator(object):
+    def __init__(self, application, values=[]):
+        self.application = application
+        self.values = values
+        self.context = None
+
+    def __call__(self, fun):
+        def wrapper(*args, **kwargs):
+            ctx = self.application._enter_context()
+            kwargs = dict(kwargs)
+            try:
+                if self.values == []:
+                    if "ctx" not in kwargs:
+                        kwargs["ctx"] = ctx
+                elif isinstance(self.values, str):
+                    kwargs[self.values] = getattr(ctx, self.values)
+                elif isinstance(self.values, Iterable):
+                    for key in self.values:
+                        if key not in kwargs:
+                            kwargs[key] = getattr(ctx, key)
+                else:
+                    raise RuntimeError("Wrong argument type!")
+                return fun(*args, **kwargs)
+            finally:
+                # TODO: we probably need to pass here something
+                self.application._exit_context(None, None, None)
+
+        return wrapper
     # ---------------------------
+
+
 class IAPConfigurator(BaseIAPConfigurator):
     def append_plugins(self):
         self.add_plugin(SettingsPlugin("iep.application.settings"))

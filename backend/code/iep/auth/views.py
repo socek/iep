@@ -1,10 +1,11 @@
 from uuid import uuid4
 
 from pyramid.httpexceptions import HTTPBadRequest
-from sapp.decorators import WithContext
 from sqlalchemy.exc import IntegrityError
 
 from iep import app
+from iep.application.app import ContextManager
+from iep.application.app import Decorator
 from iep.application.views import RestfulView
 from iep.auth.drivers import UserCommand
 from iep.auth.drivers import UserQuery
@@ -15,11 +16,6 @@ from iep.auth.schemas import SignUpSchema
 
 
 class LoginView(RestfulView):
-    @property
-    @WithContext(app, args=["dbsession"])
-    def query(self, dbsession):
-        return UserQuery(dbsession)
-
     def post(self):
         fields = self.get_validated_fields(LoginSchema())
         user = self.get_authenticated_user(fields)
@@ -29,18 +25,15 @@ class LoginView(RestfulView):
             raise HTTPBadRequest(
                 json={"_schema": ["Username and/or password do not match."]})
 
-    def get_authenticated_user(self, fields):
-        user = self.query.find_by_email(fields["email"])
+    @Decorator(app, "dbsession")
+    def get_authenticated_user(self, fields, dbsession):
+        query = UserQuery(dbsession)
+        user = query.find_by_email(fields["email"])
         if user and user.do_password_match(fields["password"]):
             return user
 
 
 class SignUpView(RestfulView):
-    @property
-    @WithContext(app, args=["dbsession"])
-    def command(self, dbsession):
-        return UserCommand(dbsession)
-
     def post(self):
         fields = self.get_validated_fields(SignUpSchema())
         try:
@@ -57,5 +50,6 @@ class SignUpView(RestfulView):
             email=fields['email'],
             is_admin=False)
         user.set_password(fields['password'])
-        self.command.create(user)
+        with ContextManager(app, "dbsession") as dbsession:
+            UserCommand(dbsession).create(user)
         return user

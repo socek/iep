@@ -10,6 +10,7 @@ from sapp.plugins.sqlalchemy.recreate import RecreateDatabases
 from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 from sqlalchemy.exc import InvalidRequestError
 
+from iep.application.app import ContextManager
 from iep.application.app import IAPConfigurator
 from iep.auth.drivers import UserCommand
 from iep.auth.drivers import UserQuery
@@ -70,8 +71,9 @@ class IAPFixturesMixin(object):
 
     @fixture(scope="class")
     def app(self, config):
-        with config as app:
-            yield app
+        # TODO: rename to ctx
+        with ContextManager(config) as ctx:
+            yield ctx
 
     @fixture(scope="class")
     def dbsession(self, app):

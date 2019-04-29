@@ -9,6 +9,8 @@ from sapp.configurator import ConfiguratorNotStartedError
 from sapp.plugin import Plugin
 
 from iep.application.app import BaseIAPConfigurator
+from iep.application.app import ContextManager
+from iep.application.app import Decorator
 
 
 class ExamplePlugin(Plugin):
@@ -41,62 +43,76 @@ class TestApplication(object):
         return app
 
     def test_as_context_manager(self, app):
-        with app as context:
-            assert context.first == sentinel.first
-            assert context.second == sentinel.second
-
-    def test_as_context_manager_call(self, app):
-        with app() as context:
+        with ContextManager(app) as context:
             assert context.first == sentinel.first
             assert context.second == sentinel.second
 
     def test_as_context_manager_call_with_argument(self, app):
-        with app("first") as first:
+        with ContextManager(app, "first") as first:
             assert first == sentinel.first
 
     def test_as_context_manager_call_with_arguments(self, app):
-        with app("first", "second") as (first, second):
+        with ContextManager(app, ["first", "second"]) as (first, second):
             assert first == sentinel.first
             assert second == sentinel.second
 
+    def test_as_context_manager_call_with_wrong_arguments(self, app):
+        with raises(RuntimeError):
+            with ContextManager(app, 1) as (first, second):
+                assert first == sentinel.first
+                assert second == sentinel.second
+
     def test_as_decorator(self, app):
-        @app
-        def fun(context, arg):
+        @Decorator(app)
+        def fun(arg, ctx):
             assert arg == sentinel.arg
-            assert context.first == sentinel.first
-            assert context.second == sentinel.second
+            assert ctx.first == sentinel.first
+            assert ctx.second == sentinel.second
 
         fun(sentinel.arg)
 
-    def test_as_decorator_call(self, app):
-        @app()
-        def fun(context, arg):
+    def test_as_decorator_with_ctx_injected(self, app):
+        @Decorator(app)
+        def fun(arg, ctx):
             assert arg == sentinel.arg
-            assert context.first == sentinel.first
-            assert context.second == sentinel.second
+            assert ctx == sentinel.ctx
 
-        fun(sentinel.arg)
+        fun(sentinel.arg, ctx=sentinel.ctx)
 
     def test_as_decorator_call_with_argument(self, app):
-        @app("first")
-        def fun(first, arg):
+        @Decorator(app, "first")
+        def fun(arg, first):
             assert arg == sentinel.arg
             assert first == sentinel.first
 
         fun(sentinel.arg)
 
     def test_as_decorator_call_with_arguments(self, app):
-        @app("first", "second")
-        def fun(first, second, arg):
+        @Decorator(app, ["first", "second"])
+        def fun(arg, first, second):
             assert arg == sentinel.arg
             assert first == sentinel.first
             assert second == sentinel.second
 
         fun(sentinel.arg)
 
-    def test_as_function_generator(self, app):
+    def test_as_decorator_call_with_arguments_injected(self, app):
+        @Decorator(app, ["first", "second"])
+        def fun(arg, first, second):
+            assert arg == sentinel.arg
+            assert first == sentinel.third
+            assert second == sentinel.second
+
+        fun(sentinel.arg, first=sentinel.third)
+
+    def test_as_decorator_with_wrong_argument(self, app):
+        @Decorator(app, 1)
+        def fun(arg, first, second):
+            assert arg == sentinel.arg
+            assert first == sentinel.first
+            assert second == sentinel.second
         with raises(RuntimeError):
-            app()()
+            fun(sentinel.arg)
 
 
 class ExampleConfigurator2(BaseIAPConfigurator):
@@ -146,8 +162,8 @@ class TestConfigurator(object):
         """
         configurator.start()
 
-        with configurator as app:
-            with configurator as app:
+        with ContextManager(configurator) as app:
+            with ContextManager(configurator) as app:
                 configurator.plugin1.enter.assert_called_once_with(app)
                 configurator.plugin2.enter.assert_called_once_with(app)
 
@@ -166,7 +182,7 @@ class TestConfigurator(object):
         error = RuntimeError()
 
         with raises(RuntimeError):
-            with configurator as app:
+            with ContextManager(configurator) as app:
                 raise error
 
         configurator.plugin1.start.assert_called_once_with(configurator)
@@ -184,14 +200,6 @@ class TestConfigurator(object):
         assert call[2] == error
         assert call[3] is not None
 
-    def test_mocking(self, configurator):
-        """
-        Mocking the application objects should be simple an easy.
-        """
-        with patch.object(configurator, "create_context") as mock:
-            with configurator as app:
-                assert app == mock.return_value
-
 
 class ExamplePlugin2(object):
     def start(self, configurator):
@@ -206,13 +214,11 @@ class ExamplePlugin2(object):
 
 class ExampleSecondPlugin(ExamplePlugin2):
     def enter(self, context):
-        print("b")
         context.second = sentinel.second
 
 
 class ExampleThirdPlugin(ExamplePlugin2):
     def enter(self, context):
-        print("c")
         context.third = sentinel.third
 
 
@@ -229,22 +235,13 @@ class TestFragmentContext(object):
     def configurator(self):
         return ExampleSecondConfigurator()
 
-    def test_no_parametr(self, configurator):
-        """
-        Configuratior should be able to give normal context if no parameteres
-        gived.
-        """
-        configurator.start()
-        with configurator() as ctx:
-            assert ctx.second == sentinel.second
-
     def test_one_parametr(self, configurator):
         """
         Configuratior should be able to give context only of the choosed
         parameters as a one.
         """
         configurator.start()
-        with configurator("second") as second:
+        with ContextManager(configurator, "second") as second:
             assert second == sentinel.second
 
     def test_two_parameters(self, configurator):
@@ -253,6 +250,6 @@ class TestFragmentContext(object):
         parameters as a list.
         """
         configurator.start()
-        with configurator("first", "third") as (first, third):
+        with ContextManager(configurator, ["first", "third"]) as (first, third):
             assert first == sentinel.first
             assert third == sentinel.third

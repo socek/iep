@@ -1,6 +1,7 @@
 from sapp.plugins.sqlalchemy.driver import Command as BaseCommand
 
 from iep import app
+from iep.application.app import Decorator
 
 
 class Command(BaseCommand):
@@ -52,8 +53,8 @@ class SaveNewForModel(object):
         uid = self._save(obj)
         return uid
 
-    @app("dbsession")
-    def _save(db, self, obj):
-        db.add(obj)
-        db.commit()
+    @Decorator(app, "dbsession")
+    def _save(self, obj, dbsession=None):
+        dbsession.add(obj)
+        dbsession.commit()
         return obj.uid
