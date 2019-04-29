@@ -1,3 +1,4 @@
 alias run="pipenv run"
 alias pytest="pipenv run pytest"
 alias alembic="pipenv run alembic"
+alias shell="pipenv run pshell app.ini"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0a2f72a2dab53d70e70eaaa1159d95310691c44aeb37c5a008554d08f7b44783"
+            "sha256": "b35a79890b339b432d04cd3434e22a17f4d22e3f8e4b79995c8a4daedcc6d88d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -202,7 +202,8 @@
         },
         "pycparser": {
             "hashes": [
-                "sha256:a988718abfad80b6b157acce7bf130a30876d27603738ac39f140993246b25b3"
+                "sha256:a988718abfad80b6b157acce7bf130a30876d27603738ac39f140993246b25b3",
+                "sha256:b6719519fbc484bca4fb9ea1097401d285606fca441cff43bc6adf560763d808"
             ],
             "version": "==2.19"
         },
@@ -228,6 +229,14 @@
             ],
             "index": "pypi",
             "version": "==1.10.4"
+        },
+        "pyramid-ipython": {
+            "hashes": [
+                "sha256:1c8bc09648e6f5aaebbbd01e55d36a73d7cfb5c369a8eb32696d32f759eca815",
+                "sha256:be2a349f2830d36ab5de67cdfae65c92b69d8f129c0852d3989a31d7c847775b"
+            ],
+            "index": "pypi",
+            "version": "==0.2"
         },
         "python-decouple": {
             "hashes": [
@@ -346,10 +355,10 @@
     "develop": {
         "alembic": {
             "hashes": [
-                "sha256:40b9a619aa5f25ea1e1508adcda88b33704ef28e02c9cfa6471e5c772ecf0829"
+                "sha256:828dcaa922155a2b7166c4f36ec45268944e4055c86499bd14319b4c8c0094b7"
             ],
             "index": "pypi",
-            "version": "==1.0.9"
+            "version": "==1.0.10"
         },
         "atomicwrites": {
             "hashes": [

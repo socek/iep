@@ -15,6 +15,7 @@ psycopg2 = "*"
 venusian = "*"
 bcrypt = "*"
 pyjwt = "*"
+pyramid-ipython = "*"
 
 [dev-packages]
 ipython = "*"
