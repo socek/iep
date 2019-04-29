@@ -1,9 +1,6 @@
-from iep.application.drivers import Command
+from iep import app
+from iep.application.drivers.command import SaveNewForModel
 
 from .dbmodels import PanelData
-from .query import PanelsQuery
 
-
-class PanelsCommand(Command):
-    model = PanelData
-    _query = PanelsQuery
+save_new = SaveNewForModel(PanelData)

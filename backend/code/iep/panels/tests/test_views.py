@@ -15,30 +15,34 @@ class TestPanelsView(ViewFixture):
         return PanelsView(mroot_factory, mrequest)
 
     @fixture
-    def mcreate_context(self):
-        with patch("iep.panels.views.app.create_context") as mock:
+    def mlist_active(self):
+        with patch("iep.panels.views.list_active") as mock:
             yield mock
 
     @fixture
-    def mpanels_query(self):
-        with patch("iep.panels.views.PanelsQuery") as mock:
+    def msave(self):
+        with patch("iep.panels.views.save_new") as mock:
             yield mock
 
-    def test_get(self, view, mcreate_context, mpanels_query):
+    def test_get(self, view, mlist_active):
         """
         GET should return serialized list of all active panels.
         """
-        obj = Panel(uuid4())
-        mpanels_query.return_value.list_active.return_value = [obj]
+        assert view.get() == mlist_active.return_value
 
-        assert view.get() == [{
-            "uid": obj.uid.hex,
-            "name": obj.name,
-            "description": obj.description,
-            "additional": obj.additional,
-            "creator": obj.creator,
-            "room": obj.room,
-        }]
+    def test_put(self, view, msave, mrequest):
+        """
+        PUT should create and save new model.
+        """
+        mrequest.json_body = {
+            'name': 'Name',
+            'description': 'Description',
+            'additional': 'Additional',
+            'creator': 'Creator',
+            'room': '101'
+        }
 
-        mcreate_context.assert_called_once_with()
-        mpanels_query.assert_called_once_with(mcreate_context.return_value.dbsession)
+        assert view.put() == {
+            'is_success': True,
+            'uid': msave.return_value
+        }

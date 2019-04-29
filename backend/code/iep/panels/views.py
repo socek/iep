@@ -3,28 +3,29 @@ from uuid import uuid4
 from pyramid.httpexceptions import HTTPBadRequest
 
 from iep import app
-from iep.panels.drivers.query import PanelsQuery
-from iep.panels.schemas import PanelSchema
 from iep.application.views import RestfulView
+from iep.panels.drivers.query import list_active
+from iep.panels.schemas import PanelSchema
+from iep.panels.drivers.command import save_new
 
-# Gather
-# Get
-# Manipulate
-# Store
-# Result
+
 
 
 class PanelsView(RestfulView):
-    def _get_panels(self):
-        with app("dbsession") as db:
-            query = PanelsQuery(db)
-            return query.list_active()
-
     def get(self):
         """
         List all active panels.
         """
-        panels = self._get_panels()
-        schema = PanelSchema(many=True)
-        result = schema.dump(panels)
-        return result
+        return list_active()
+
+    def put(self):
+        """
+        Create new bill for logged in user.
+        """
+        schema = PanelSchema()
+        panel = self.get_validated_fields(schema, partial=("uid",))
+        uid = save_new(panel)
+        return {
+            'is_success': True,
+            'uid': uid
+        }

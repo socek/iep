@@ -4,7 +4,7 @@ from iep.application.model import Model
 class Panel(Model):
     def __init__(
         self,
-        uid,
+        uid=None,
         created_at=None,
         updated_at=None,
         name=None,
@@ -20,14 +20,3 @@ class Panel(Model):
         self.creator = creator
         self.room = room
 
-    def to_dict(self):
-        return {
-            "uid": self.uid,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-            "name": self.name,
-            "description": self.description,
-            "additional": self.additional,
-            "creator": self.creator,
-            "room": self.room,
-        }

@@ -1,5 +1,7 @@
 from sapp.plugins.sqlalchemy.driver import Command as BaseCommand
 
+from iep import app
+
 
 class Command(BaseCommand):
     """
@@ -36,3 +38,22 @@ class Command(BaseCommand):
     def force_delete(self, uid):
         self.database.query(self.model).filter(self.model.uid == uid).delete()
         self.database.commit()
+
+
+class SaveNewForModel(object):
+    def __init__(self, model):
+        self.model = model
+
+    def __call__(self, *args, **kwargs):
+        obj = self.model()
+        for key, value in kwargs.items():
+            setattr(obj, key, value)
+
+        uid = self._save(obj)
+        return uid
+
+    @app("dbsession")
+    def _save(db, self, obj):
+        db.add(obj)
+        db.commit()
+        return obj.uid
