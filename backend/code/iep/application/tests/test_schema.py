@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 from pytest import fixture
 
@@ -19,8 +20,10 @@ class TestModelSchema(object):
         """
         .make_dict should return data in dict format.
         """
+        uid = uuid4()
         obj = MagicMock()
-        assert schema.make_dict(obj) == obj.to_dict.return_value
+        obj.to_dict.return_value = {'uid': uid}
+        assert schema.dump(obj) == {'uid': uid.hex}
         obj.to_dict.assert_called_once_with()
 
     def test_make_model(self, schema):

@@ -1,6 +1,7 @@
 from inspect import isfunction
 from inspect import ismethod
 
+from sapp.configurator import ConfiguratorNotStartedError
 from sapp.context import Context
 from sapp.plugins.json import JsonPlugin
 from sapp.plugins.logging import LoggingPlugin
@@ -68,19 +69,17 @@ class ContextGenerator(object):
             raise RuntimeError("You can not call an application!")
 
 
-class IAPConfigurator(ConfiguratorWithPyramid):
-    def append_plugins(self):
-        self.add_plugin(SettingsPlugin("iep.application.settings"))
-        self.add_plugin(LoggingPlugin())
-        self.add_plugin(DatabasePlugin("dbsession"))
-        self.add_plugin(RoutingPlugin(IAPRouting))
-        self.add_plugin(JsonPlugin())
+class BaseIAPConfigurator(ConfiguratorWithPyramid):
+    def __init__(self):
+        self.is_started = False
+        self.startpoint = None
+        self.plugins = []
+        self.context_count = 0
+        self.context = None
 
-    def __call__(self, *args):
-        return ContextGenerator(self, args)
-
-    def __enter__(self):
-        return self.create_context()
+    def _start_plugins(self):
+        for plugin in self.plugins:
+            plugin.start(self)
 
     def create_context(self):
         if not self.is_started:
@@ -98,3 +97,21 @@ class IAPConfigurator(ConfiguratorWithPyramid):
         self.context_count -= 1
         if self.context_count == 0:
             self.context.exit(exc_type, exc_value, traceback)
+
+    def add_plugin(self, plugin):
+        self.plugins.append(plugin)
+
+    def __call__(self, *args):
+        return ContextGenerator(self, args)
+
+    def __enter__(self):
+        return self.create_context()
+
+    # ---------------------------
+class IAPConfigurator(BaseIAPConfigurator):
+    def append_plugins(self):
+        self.add_plugin(SettingsPlugin("iep.application.settings"))
+        self.add_plugin(LoggingPlugin())
+        self.add_plugin(DatabasePlugin("dbsession"))
+        self.add_plugin(RoutingPlugin(IAPRouting))
+        self.add_plugin(JsonPlugin())
