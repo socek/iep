@@ -3,18 +3,14 @@ from unittest.mock import PropertyMock
 from unittest.mock import patch
 from uuid import uuid4
 
-from alembic import command
-from alembic.config import Config
-from pytest import fixture
+from pytest import fixture, mark
 from sapp.plugins.pyramid.testing import BaseWebTestFixture
 from sapp.plugins.pyramid.testing import ViewFixtureMixin
 from sapp.plugins.sqlalchemy.recreate import RecreateDatabases
-from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
 
 from iep import app
-from iep.application.app import ContextManager
 from iep.application.app import IAPConfigurator
 from iep.auth.drivers import command as user_command
 from iep.auth.drivers import query as user_query
@@ -49,11 +45,6 @@ class ImprovedRecreateDatabases(RecreateDatabases):
         engine = database.get_engine(default_url=True)
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
-        # session.execute(
-        #     "UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{}}';".format(
-        #         dbname
-        #     )
-        # )
         session.execute(
             """SELECT pg_terminate_backend(pg_stat_activity.pid)
                 FROM pg_stat_activity
@@ -67,6 +58,7 @@ class ImprovedRecreateDatabases(RecreateDatabases):
         session.close()
 
 
+@mark.integration
 class IAPFixturesMixin(object):
     CONFIGURATOR_CLASS = IAPConfigurator
 
@@ -117,7 +109,7 @@ class IAPFixturesMixin(object):
 
 class IntegrationFixture(IAPFixturesMixin):
     SESSION_CACHE = {}
-    CONFIGURATOR_KEY = 'app'
+    CONFIGURATOR_KEY = "app"
 
     def after_configurator_start(self, app):
         paths = app.settings["paths"]
@@ -132,11 +124,10 @@ class IntegrationFixture(IAPFixturesMixin):
         accessing app during the tests.
         """
         if self.CONFIGURATOR_KEY not in self.SESSION_CACHE:
-            app.start('tests')
+            app.start("tests")
             self.SESSION_CACHE[self.CONFIGURATOR_KEY] = app
             self.after_configurator_start(app)
         return self.SESSION_CACHE[self.CONFIGURATOR_KEY]
-
 
 
 class WebTestFixture(IAPFixturesMixin, BaseWebTestFixture):
