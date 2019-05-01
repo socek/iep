@@ -16,9 +16,9 @@ class BaseForModel(object):
         self.model = model
 
 
-class GetByUidForModel(BaseForModel):
+class GetActiveByUidForModel(BaseForModel):
     """
-    Get model from the database by uid.
+    Get active model from the database by uid.
 
     Example:
         model = get_by_id(uid)

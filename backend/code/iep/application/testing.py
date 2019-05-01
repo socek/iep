@@ -95,13 +95,13 @@ class IAPFixturesMixin(object):
     @fixture(scope="class")
     def user(self):
         uid = user_command.save_new(**self._create_user())
-        yield user_query.get_by_uid(uid)
+        yield user_query.get_active_by_uid(uid)
         user_command.force_delete(uid)
 
     @fixture
     def dynamic_user(self):
         uid = user_command.save_new(**self._create_user("dynamic@gmail.com"))
-        yield user_query.get_by_uid(uid)
+        yield user_query.get_active_by_uid(uid)
         user_command.force_delete(uid)
 
     @fixture(scope="class")
@@ -111,7 +111,7 @@ class IAPFixturesMixin(object):
         user = User(None, **user_data)
         user.set_password(password_txt)
         uid = user_command.create(user.to_dict())
-        yield user_query.get_by_uid(uid)
+        yield user_query.get_active_by_uid(uid)
         user_command.force_delete(uid)
 
 

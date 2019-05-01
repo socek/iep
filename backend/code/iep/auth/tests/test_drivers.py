@@ -23,8 +23,8 @@ class TestUserDriver(IntegrationFixture):
         assert user.password != self.user_data["password"]
         assert type(user.password) == bytes
 
-    def test_get_by_uid(self, user):
-        model = user_query.get_by_uid(user.uid)
+    def test_get_active_by_uid(self, user):
+        model = user_query.get_active_by_uid(user.uid)
         assert model.uid == user.uid
         assert model.created_at == user.created_at
         assert model.updated_at == user.updated_at
@@ -33,18 +33,18 @@ class TestUserDriver(IntegrationFixture):
         assert model.is_admin == user.is_admin
         assert model.password == user.password
 
-    def test_get_by_uid_with_bad_uid(self):
+    def test_get_active_by_uid_with_bad_uid(self):
         """
-        .get_by_uid should raise NoResultFound when uuid is malformed
+        .get_active_by_uid should raise NoResultFound when uuid is malformed
         """
         with raises(NoResultFound):
-            user_query.get_by_uid("x")
+            user_query.get_active_by_uid("x")
 
     def test_delete(self, dynamic_user):
         user_command.delete_by_uid(dynamic_user.uid)
 
         with raises(NoResultFound):
-            user_query.get_by_uid(dynamic_user.uid)
+            user_query.get_active_by_uid(dynamic_user.uid)
 
         result = [user["uid"] for user in user_query.list_active()]
         assert dynamic_user.uid not in result

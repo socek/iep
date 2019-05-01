@@ -35,11 +35,11 @@ class TestPanelDrivers(IntegrationFixture):
         assert list(query.list_active()) == []
 
         with raises(NoResultFound):
-            query.get_by_uid(panel_uid)
+            query.get_active_by_uid(panel_uid)
 
-    def test_get_by_uuid(self):
+    def test_get_active_by_uid(self):
         """
         Get By Uid should raise NoResultFound when uid is not an uuid like.
         """
         with raises(NoResultFound):
-            query.get_by_uid(10)
+            query.get_active_by_uid(10)
