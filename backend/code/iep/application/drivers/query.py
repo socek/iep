@@ -23,6 +23,7 @@ class GetActiveByUidForModel(BaseForModel):
     Example:
         model = get_by_id(uid)
     """
+
     def __call__(self, uid):
         try:
             isinstance(uid, UUID) or UUID(uid)

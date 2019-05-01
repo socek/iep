@@ -20,3 +20,14 @@ class Panel(Model):
         self.creator = creator
         self.room = room
 
+    def to_dict(self):
+        return dict(
+            uid=self.uid,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+            name=self.name,
+            description=self.description,
+            additional=self.additional,
+            creator=self.creator,
+            room=self.room,
+        )

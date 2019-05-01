@@ -3,10 +3,8 @@ from json.decoder import JSONDecodeError
 from marshmallow.exceptions import ValidationError
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotAcceptable
-from sapp.decorators import WithContext
-from sapp.plugins.pyramid.views import RestfulView as BaseRestfulView
 
-from iep import app
+from sapp.plugins.pyramid.views import RestfulView as BaseRestfulView
 
 
 class RestfulView(BaseRestfulView):
