@@ -23,8 +23,8 @@ class TestAuthMixin(object):
         return MagicMock
 
     @fixture
-    def muser_query(self):
-        with patch("iep.auth.view_mixins.UserQuery") as mock:
+    def mquery(self):
+        with patch("iep.auth.view_mixins.query") as mock:
             yield mock
 
     @fixture
@@ -49,12 +49,10 @@ class TestAuthMixin(object):
     def get_user(self, mixin):
         return undecorated(mixin.get_user)
 
-    def test_get_user(self, mixin, mdb, muser_query, get_user, mrequest, mdecoded_jwt):
+    def test_get_user(self, mixin, mdb, mquery, get_user, mrequest, mdecoded_jwt):
         """
         .get_user should return authenticated user when proper jwt provided.
         """
-        mquery = muser_query.return_value
-
         assert get_user(mixin, dbsession=mdb) == mquery.get_by_uid.return_value
         mquery.get_by_uid.assert_called_once_with(sentinel.user_id)
 

@@ -20,7 +20,7 @@ class BaseIAPConfigurator(ConfiguratorWithPyramid):
         self.startpoint = None
         self.plugins = []
 
-        self.context_counter = 0
+        self.context_count = 0
         self.context = None
 
     def _start_plugins(self):
@@ -31,15 +31,15 @@ class BaseIAPConfigurator(ConfiguratorWithPyramid):
         self.plugins.append(plugin)
 
     def _enter_context(self):
-        self.context_counter += 1
+        self.context_count += 1
         if not self.context:
             self.context = Context(self)
             self.context.enter()
         return self.context
 
     def _exit_context(self, exc_type, exc_value, traceback):
-        self.context_counter -= 1
-        if self.context_counter == 0:
+        self.context_count -= 1
+        if self.context_count == 0:
             self.context.exit(exc_type, exc_value, traceback)
 
 

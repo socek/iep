@@ -48,8 +48,8 @@ class TestWebSignUpFormView(WebTestFixture):
 
     @fixture
     def mcommand(self):
-        with patch("iep.auth.views.UserCommand") as mock:
-            yield mock.return_value
+        with patch("iep.auth.views.command") as mock:
+            yield mock
 
     def test_signup_happy_path(self, fake_app, mcommand):
         """
@@ -63,6 +63,6 @@ class TestWebSignUpFormView(WebTestFixture):
         }
 
         result = fake_app.post_json(self.url, params=new_user)
-        user = mcommand.create.call_args_list[0][0][0]
+        mcommand.save_new.assert_called_once()
 
-        assert result.json_body == {"jwt": encode_jwt_from_user(user)}
+        assert result.json_body["jwt"]

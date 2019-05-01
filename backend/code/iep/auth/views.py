@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from pyramid.httpexceptions import HTTPBadRequest
 from sqlalchemy.exc import IntegrityError
 
@@ -7,8 +5,8 @@ from iep import app
 from iep.application.app import ContextManager
 from iep.application.app import Decorator
 from iep.application.views import RestfulView
-from iep.auth.drivers import UserCommand
-from iep.auth.drivers import UserQuery
+from iep.auth.drivers import command
+from iep.auth.drivers import query
 from iep.auth.jwt import encode_jwt_from_user
 from iep.auth.models import User
 from iep.auth.schemas import LoginSchema
@@ -23,11 +21,11 @@ class LoginView(RestfulView):
             return {"jwt": encode_jwt_from_user(user)}
         else:
             raise HTTPBadRequest(
-                json={"_schema": ["Username and/or password do not match."]})
+                json={"_schema": ["Username and/or password do not match."]}
+            )
 
     @Decorator(app, "dbsession")
     def get_authenticated_user(self, fields, dbsession):
-        query = UserQuery(dbsession)
         user = query.find_by_email(fields["email"])
         if user and user.do_password_match(fields["password"]):
             return user
@@ -41,15 +39,11 @@ class SignUpView(RestfulView):
             return {"jwt": encode_jwt_from_user(user)}
         except IntegrityError:
             raise HTTPBadRequest(
-                json={"_schema": ["User with that email already exists"]})
+                json={"_schema": ["User with that email already exists"]}
+            )
 
     def create_user(self, fields):
-        user = User(
-            uuid4(),
-            name=fields['name'],
-            email=fields['email'],
-            is_admin=False)
-        user.set_password(fields['password'])
-        with ContextManager(app, "dbsession") as dbsession:
-            UserCommand(dbsession).create(user)
+        user = User(None, name=fields["name"], email=fields["email"], is_admin=False)
+        user.set_password(fields["password"])
+        command.save_new(**user.to_dict())
         return user

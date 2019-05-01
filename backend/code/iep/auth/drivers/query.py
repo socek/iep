@@ -1,14 +1,15 @@
-from iep.application.drivers import Query
+from iep import Decorator
+from iep import app
+from iep.application.drivers.query import GetByUidForModel
+from iep.application.drivers.query import ListActiveForModel
 
 from .dbmodels import UserData
 
+list_active = ListActiveForModel(UserData)
+get_by_uid = GetByUidForModel(UserData)
 
-class UserQuery(Query):
-    model = UserData
 
-    def _get_by_email(self, email):
-        return self._query().filter(self.model.email == email)
-
-    def find_by_email(self, email):
-        data = self._get_by_email(email).first()
-        return data.to_model() if data else None
+@Decorator(app, "dbsession")
+def find_by_email(email, dbsession):
+    row = dbsession.query(UserData).filter(UserData.email == email).first()
+    return row.to_model() if row else None

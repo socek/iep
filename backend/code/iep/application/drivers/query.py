@@ -3,36 +3,54 @@ from uuid import UUID
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import NoResultFound as SANoResultFound
 
-from sapp.plugins.sqlalchemy.driver import Query as BaseQuery
+from iep import app
+from iep.application.app import Decorator
 
 
 class NoResultFound(Exception):
     pass
 
 
-class Query(BaseQuery):
-    """
-    You need to set up:
-    - model
-    """
+class BaseForModel(object):
+    def __init__(self, model):
+        self.model = model
 
-    def get_by_uid(self, uid):
+
+class GetByUidForModel(BaseForModel):
+    """
+    Get model from the database by uid.
+
+    Example:
+        model = get_by_id(uid)
+    """
+    def __call__(self, uid):
         try:
             isinstance(uid, UUID) or UUID(uid)
         except (ValueError, AttributeError):
             raise NoResultFound
 
+        return self._get_by_uid(uid).to_model()
+
+    @Decorator(app, "dbsession")
+    def _get_by_uid(self, uid, dbsession):
         try:
-            return self._get_by_uid(uid).one().to_model()
+            return (
+                dbsession.query(self.model)
+                .filter(self.model.uid == uid, self.model.is_active.is_(True))
+                .one()
+            )
         except (SANoResultFound, DataError):
             raise NoResultFound
 
-    def _list_active(self):
-        return self._query().filter(self.model.is_active.is_(True))
 
-    def _get_by_uid(self, uid):
-        return self._list_active().filter(self.model.uid == uid)
+class ListActiveForModel(BaseForModel):
+    """
+    List all not delated (is_active==True) rows from the database.
+    """
+    @Decorator(app, "dbsession")
+    def _list_active(self, dbsession):
+        return dbsession.query(self.model).filter(self.model.is_active.is_(True))
 
-    def list_active(self):
-        for obj in self._list_active().order_by(self.model.created_at):
-            yield obj.to_model()
+    def __call__(self):
+        for row in self._list_active():
+            yield row.to_dict()

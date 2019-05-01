@@ -1,50 +1,19 @@
-from sapp.plugins.sqlalchemy.driver import Command as BaseCommand
-
 from iep import app
 from iep.application.app import Decorator
 
 
-class Command(BaseCommand):
-    """
-    You need to set up:
-    - model
-    - _query
-    """
-
-    @property
-    def query(self):
-        return self._query(self.database)
-
-    def create(self, model):
-        obj = self.model()
-        obj.from_object(model)
-        self.database.add(obj)
-        self.database.commit()
-        obj._update_model_after_commit(model)
-
-    def _update_by_uid(self, uid, update):
-        update_raw = {}
-        for key, value in update.items():
-            update_raw[getattr(self.model, key)] = value
-        self.query._get_by_uid(uid).update(update_raw)
-
-    def update_by_uid(self, uid, update):
-        self._update_by_uid(uid, update)
-        self.database.commit()
-
-    def delete(self, uid):
-        self.update_by_uid(uid, {"is_active": False})
-        self.database.commit()
-
-    def force_delete(self, uid):
-        self.database.query(self.model).filter(self.model.uid == uid).delete()
-        self.database.commit()
-
-
-class SaveNewForModel(object):
+class BaseForModel(object):
     def __init__(self, model):
         self.model = model
 
+
+class SaveNewForModel(BaseForModel):
+    """
+    Save new row's data to the database. Returns new uid of the object.
+
+    Example:
+        save_new(name="my name is", surname="slimshady")
+    """
     def __call__(self, *args, **kwargs):
         obj = self.model()
         for key, value in kwargs.items():
@@ -58,3 +27,47 @@ class SaveNewForModel(object):
         dbsession.add(obj)
         dbsession.commit()
         return obj.uid
+
+
+class UpdateByIdForModel(BaseForModel):
+    """
+    Update row's data.
+
+    Example:
+        update_by_id(uid, {name:"marshal matters"})
+    """
+    def __call__(self, uid, update):
+        update_raw = {}
+        for key, value in update.items():
+            update_raw[getattr(self.model, key)] = value
+        self._update(uid, update_raw)
+
+    @Decorator(app, "dbsession")
+    def _update(self, uid, update, dbsession=None):
+        dbsession.query(self.model).filter(self.model.uid == uid).update(update)
+        dbsession.commit()
+
+
+class DeleteByIdForModel(UpdateByIdForModel):
+    """
+    Delete (hide) the row in the database.
+
+    Example:
+        delete_by_id(uid)
+    """
+    def __call__(self, uid):
+        super().__call__(uid, {"is_active": False})
+
+
+class ForceDeleteForModel(BaseForModel):
+    """
+    Remove row from the database.
+    !!! Use with caution !!!
+
+    Example:
+        force_delete(uid)
+    """
+    @Decorator(app, "dbsession")
+    def __call__(self, uid, dbsession):
+        dbsession.query(self.model).filter(self.model.uid == uid).delete()
+        dbsession.commit()

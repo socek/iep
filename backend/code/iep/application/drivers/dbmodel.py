@@ -62,13 +62,5 @@ class Base(object):
         """
         return self._model(**self.to_dict())
 
-    def from_object(self, obj):
-        """
-        Update SqlDataModel from normal model.
-        """
-        for name in self._get_all_column_names():
-            value = getattr(obj, name)
-            setattr(self, name, value)
-
 
 SqlDataModel = declarative_base(metadata=metadata, cls=Base)

@@ -2,12 +2,14 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from pytest import fixture
+from pytest import mark
 from undecorated import undecorated
 
 from iep.auth.jwt import decode_jwt
 from iep.auth.jwt import encode_jwt_from_user
 
 
+@mark.integration
 class TestJwt(object):
     @fixture
     def muser(self):

@@ -3,17 +3,21 @@ from unittest.mock import PropertyMock
 from unittest.mock import patch
 from uuid import uuid4
 
+from alembic import command
+from alembic.config import Config
 from pytest import fixture
 from sapp.plugins.pyramid.testing import BaseWebTestFixture
 from sapp.plugins.pyramid.testing import ViewFixtureMixin
 from sapp.plugins.sqlalchemy.recreate import RecreateDatabases
 from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm import sessionmaker
 
+from iep import app
 from iep.application.app import ContextManager
 from iep.application.app import IAPConfigurator
-from iep.auth.drivers import UserCommand
-from iep.auth.drivers import UserQuery
+from iep.auth.drivers import command as user_command
+from iep.auth.drivers import query as user_query
 from iep.auth.models import User
 
 
@@ -34,14 +38,37 @@ class DeleteOnExit(object):
             self.dbsession.rollback()
 
 
+class ImprovedRecreateDatabases(RecreateDatabases):
+    def _clear_database(self, database):
+        """
+        In order to drop database, we need to connect to another one (using
+        default_url). With that connection we need to drop and create new
+        database.
+        """
+        dbname = database.get_dbname()
+        engine = database.get_engine(default_url=True)
+        session = sessionmaker(bind=engine)()
+        session.connection().connection.set_isolation_level(0)
+        # session.execute(
+        #     "UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{}}';".format(
+        #         dbname
+        #     )
+        # )
+        session.execute(
+            """SELECT pg_terminate_backend(pg_stat_activity.pid)
+                FROM pg_stat_activity
+                WHERE pg_stat_activity.datname = '{}' -- ← change this to your DB
+                  AND pid <> pg_backend_pid();""".format(
+                dbname
+            )
+        )
+        session.execute("DROP DATABASE IF EXISTS {}".format(dbname))
+        session.execute("CREATE DATABASE {}".format(dbname))
+        session.close()
+
+
 class IAPFixturesMixin(object):
     CONFIGURATOR_CLASS = IAPConfigurator
-
-    def after_configurator_start(self, config):
-        paths = config.settings["paths"]
-        recreate = RecreateDatabases(config)
-        recreate.append_database("dbsession", paths["alembic:migrations"])
-        recreate.make()
 
     user_data = {
         "name": "user1",
@@ -57,74 +84,59 @@ class IAPFixturesMixin(object):
         "password": "mypassword",
     }
 
-    wallet_data = {"name": "Wallet1", "type": "private"}
-    second_wallet_data = {"name": "Wallet2", "type": "private"}
-
-    contest_user_data = {"name": "contest1 from user1"}
-    contest_second_user_data = {"name": "contest1 from user2"}
-
-    game_user_data = {"name": "first game"}
-    game_second_user_data = {"name": "second game"}
-
-    group_data = {"name": "Group1"}
-    second_group_data = {"name": "Group2"}
-
-    @fixture(scope="class")
-    def app(self, config):
-        # TODO: rename to ctx
-        with ContextManager(config) as ctx:
-            yield ctx
-
-    @fixture(scope="class")
-    def dbsession(self, app):
-        return app.dbsession
-
-    @fixture(scope="class")
-    def user_query(self, app):
-        return UserQuery(app.dbsession)
-
-    @fixture(scope="class")
-    def user_command(self, app):
-        return UserCommand(app.dbsession)
-
-    def _create_user(self, uid, email=None):
+    def _create_user(self, email=None):
         user_data = dict(self.user_data)
         user_data["email"] = email or user_data["email"]
         password_txt = user_data.pop("password")
-        user = User(uid, **user_data)
+        user = User(None, **user_data)
         user.set_password(password_txt)
-        return user
+        return user.to_dict()
 
     @fixture(scope="class")
-    def user(self, user_command, email=None):
-        uid = uuid4()
-        user = self._create_user(uid)
-        user_command.create(user)
-        yield user
+    def user(self):
+        uid = user_command.save_new(**self._create_user())
+        yield user_query.get_by_uid(uid)
         user_command.force_delete(uid)
 
     @fixture
-    def dynamic_user(self, user_command):
-        uid = uuid4()
-        user = self._create_user(uid, "dynamic@gmail.com")
-        user_command.create(user)
-        yield user
+    def dynamic_user(self):
+        uid = user_command.save_new(**self._create_user("dynamic@gmail.com"))
+        yield user_query.get_by_uid(uid)
         user_command.force_delete(uid)
 
     @fixture(scope="class")
-    def second_user(self, user_command):
-        uid = uuid4()
+    def second_user(self):
         user_data = dict(self.second_user_data)
         password_txt = user_data.pop("password")
-        user = User(uid, **user_data)
+        user = User(None, **user_data)
         user.set_password(password_txt)
-        user_command.create(user)
-        yield user
+        uid = user_command.create(user.to_dict())
+        yield user_query.get_by_uid(uid)
         user_command.force_delete(uid)
 
 
-class IntegrationFixture(IAPFixturesMixin, BaseIntegrationFixture):
-    pass
+class IntegrationFixture(IAPFixturesMixin):
+    SESSION_CACHE = {}
+    CONFIGURATOR_KEY = 'app'
+
+    def after_configurator_start(self, app):
+        paths = app.settings["paths"]
+        recreate = ImprovedRecreateDatabases(app)
+        recreate.append_database("dbsession", paths["alembic:migrations"])
+        recreate.make()
+
+    @fixture(scope="module", autouse=True)
+    def config(self):
+        """
+        This fixture will create full configurator object. It can be use for
+        accessing app during the tests.
+        """
+        if self.CONFIGURATOR_KEY not in self.SESSION_CACHE:
+            app.start('tests')
+            self.SESSION_CACHE[self.CONFIGURATOR_KEY] = app
+            self.after_configurator_start(app)
+        return self.SESSION_CACHE[self.CONFIGURATOR_KEY]
+
 
 
 class WebTestFixture(IAPFixturesMixin, BaseWebTestFixture):

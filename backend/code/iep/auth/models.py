@@ -33,3 +33,14 @@ class User(Model):
 
     def set_password(self, password):
         self.password = hashpw(password.encode("utf8"), gensalt())
+
+    def to_dict(self):
+        return {
+            'uid': self.uid,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'name': self.name,
+            'email': self.email,
+            'is_admin': self.is_admin,
+            'password': self.password,
+        }

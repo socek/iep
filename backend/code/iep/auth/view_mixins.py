@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from iep import app
 from iep.application.cache import cache_per_request
 from iep.application.views import RestfulView
-from iep.auth.drivers import UserQuery
+from iep.auth.drivers import query
 from iep.auth.jwt import decode_jwt
 
 
@@ -16,10 +16,8 @@ class AuthMixin(object):
         """
         Get current logged in user depending on the JWT token.
         """
-        user_rd = UserQuery(dbsession)
-
         payload = self._decoded_jwt()
-        return user_rd.get_by_uid(payload["uid"])
+        return query.get_by_uid(payload["uid"])
 
     def is_authenticated(self):
         return self.request.headers.get("JWT") is not None

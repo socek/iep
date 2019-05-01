@@ -1,18 +1,8 @@
-# from iep.application.drivers import Query
 from iep import app
 
 from .dbmodels import PanelData
-from iep.application.app import Decorator
+from iep.application.drivers.query import GetByUidForModel
+from iep.application.drivers.query import ListActiveForModel
 
-
-@Decorator(app, "dbsession")
-def _list_active(dbsession):
-    return dbsession.query(PanelData).filter(PanelData.is_active.is_(True))
-
-
-def list_active():
-    """
-    Get list of all active panels.
-    """
-    for obj in _list_active():
-        yield obj.to_dict()
+list_active = ListActiveForModel(PanelData)
+get_by_uid = GetByUidForModel(PanelData)
