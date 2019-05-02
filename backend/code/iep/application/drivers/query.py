@@ -21,7 +21,7 @@ class GetActiveByUidForModel(BaseForModel):
     Get active model from the database by uid.
 
     Example:
-        model = get_by_id(uid)
+        model = get_active_by_uid(uid)
     """
 
     def __call__(self, uid):

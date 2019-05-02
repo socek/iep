@@ -1,8 +1,5 @@
 from collections import Iterable
-from inspect import isfunction
-from inspect import ismethod
 
-from sapp.configurator import ConfiguratorNotStartedError
 from sapp.context import Context
 from sapp.plugins.json import JsonPlugin
 from sapp.plugins.logging import LoggingPlugin

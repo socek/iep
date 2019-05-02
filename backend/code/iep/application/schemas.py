@@ -23,7 +23,7 @@ class ModelSchema(BaseSchema):
         """
         Serialize to dict object.
         """
-        return obj.to_dict()
+        return obj if isinstance(obj, dict) else obj.to_dict()
 
     @post_load
     def make_model(self, data):

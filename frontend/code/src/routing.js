@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import store from '@/store'
 
 import NotLoggedIn from '@/auth/not-logged-in'
-import Home from '@/home/home'
+import PanelList from '@/panels/list'
 
 Vue.use(Router)
 
@@ -39,8 +39,8 @@ let router = new Router({
     },
     {
       path: '/',
-      name: 'Home',
-      component: Home,
+      name: 'PanelList',
+      component: PanelList,
       beforeEnter: requireAuth
     }
   ]

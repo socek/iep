@@ -1,7 +1,7 @@
 from pyramid.httpexceptions import HTTPUnauthorized
-from sapp.decorators import WithContext
 from sqlalchemy.orm.exc import NoResultFound
 
+from iep import Decorator
 from iep import app
 from iep.application.cache import cache_per_request
 from iep.application.views import RestfulView
@@ -11,13 +11,13 @@ from iep.auth.jwt import decode_jwt
 
 class AuthMixin(object):
     @cache_per_request("user")
-    @WithContext(app, args=["dbsession"])
+    @Decorator(app, "dbsession")
     def get_user(self, dbsession):
         """
         Get current logged in user depending on the JWT token.
         """
         payload = self._decoded_jwt()
-        return query.get_by_uid(payload["uid"])
+        return query.get_active_by_uid(payload["uid"])
 
     def is_authenticated(self):
         return self.request.headers.get("JWT") is not None

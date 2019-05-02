@@ -31,7 +31,8 @@ class TestPanelsView(ViewFixture):
         """
         GET should return serialized list of all active panels.
         """
-        assert view.get() == mlist_active.return_value
+        assert view.get() == []
+        mlist_active.assert_called_once_with()
 
     def test_put(self, view, msave, mrequest):
         """
@@ -68,6 +69,11 @@ class TestPanelView(ViewFixture):
         with patch.object(view, "_get_panel") as mock:
             yield mock
 
+    @fixture
+    def mget_user(self, view):
+        with patch.object(view, "get_user") as mock:
+            yield mock
+
     def test_get_panel_when_not_present(self, view, mrequest, mget_active_by_uid):
         """
         ._get_panel should raise HTTPNotFound error when panel is not present.
@@ -86,12 +92,13 @@ class TestPanelView(ViewFixture):
         assert view._get_panel() == mget_active_by_uid.return_value
         mget_active_by_uid.assert_called_once_with(mrequest.matchdict["panel_uid"])
 
-    def test_validate(self, view, mget_panel):
+    def test_validate(self, view, mget_panel, mget_user):
         """
-        .validate should check if panel exists
+        .validate should check if panel exists and if user is logged in
         """
         view.validate()
         mget_panel.assert_called_once_with()
+        mget_user.assert_called_once_with()
 
     def test_get(self, view, mget_panel):
         """
@@ -110,6 +117,9 @@ class TestPanelView(ViewFixture):
         }
 
     def test_patch(self, view, mrequest, mupdate_by_uid):
+        """
+        .patch should send to database proper update data
+        """
         uid = uuid4().hex
         mrequest.matchdict = {"panel_uid": uid}
         mrequest.json_body = {

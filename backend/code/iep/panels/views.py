@@ -4,23 +4,23 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from iep.application.cache import cache_per_request
 from iep.application.drivers.query import NoResultFound
-from iep.application.views import RestfulView
 from iep.panels.drivers.command import save_new
 from iep.panels.drivers.command import update_by_uid
 from iep.panels.drivers.query import get_active_by_uid
 from iep.panels.drivers.query import list_active
 from iep.panels.schemas import PanelSchema
 from iep.panels.schemas import PanelSchemaUpdate
+from iep.auth.view_mixins import AuthenticatedView
 
 log = getLogger(__name__)
 
 
-class PanelsView(RestfulView):
+class PanelsView(AuthenticatedView):
     def get(self):
         """
         List all active panels.
         """
-        return list_active()
+        return PanelSchema(many=True).dump(list_active())
 
     def put(self):
         """
@@ -36,8 +36,9 @@ class PanelsView(RestfulView):
         return {"is_success": True, "uid": uid}
 
 
-class PanelView(RestfulView):
+class PanelView(AuthenticatedView):
     def validate(self):
+        super().validate()
         self._get_panel()
 
     def get(self):
