@@ -1,37 +1,49 @@
 <template>
-    <table>
-        <thead>
-            <tr>
-                <td>#</td>
-                <td>UUID</td>
-                <td>Name</td>
-                <td>Description</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="panel in panels">
-                <td>#</td>
-                <td>{{ panel.uid }}</td>
-                <td>{{ panel.name }}</td>
-                <td>{{ panel.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2"><icon name="book" /> Panele</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+          <new-dialog @success="fetchData"></new-dialog>
+      </div>
+    </div>
+    <b-table ref="table" :busy.sync="isBusy" show-empty striped bordered hover :items="provider" :fields="fields">
+      <template slot="actions" slot-scope="data">
+        (NO ACTIONS)
+      </template>
+      <template slot="empty">
+        Brak elementów do wyświetlenia.
+      </template>
+    </b-table>
+  </div>
 </template>
+
 <script>
 import panelResource from '@/panels/resource'
+import newDialog from '@/panels/dialogs/new'
 
 export default {
   data () {
     return {
-      panels: [],
+      isBusy: false,
+      fields: [
+        {key: 'name', label: 'Tytuł'},
+        {key: 'description', label: 'Opis'}],
+      items: [],
       resource: panelResource(this)
     }
   },
-  mounted () {
-    this.resource.list().then((response) => {
-      this.panels = response.body
-    })
+  methods: {
+    provider (ctx) {
+      return this.resource.list().then((response) => {
+        return response.data
+      })
+    },
+    fetchData () {
+      this.$refs.table.refresh()
+    }
+  },
+  components: {
+    newDialog
   }
 }
 </script>
