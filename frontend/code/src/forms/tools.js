@@ -56,11 +56,11 @@ export function convertToForm (obj) {
         let value = form[index]
         if (index.startsWith('_') || isFunction(value)) {
           // do nothing
-        } else if (value.value !== undefined) {
+        } else if (value && value.value !== undefined) {
           fields[index] = value.value
-        } else if (Array.isArray(value)) {
+        } else if (value && Array.isArray(value)) {
           fields[index] = toList(value)
-        } else {
+        } else if (value) {
           fields[index] = toValue(value)
         }
       }
@@ -89,9 +89,9 @@ export function convertToForm (obj) {
     // Set fields to default values
     for (let index in field) {
       let value = field[index]
-      if (value.default !== undefined) {
+      if (value && value.default !== undefined) {
         field[index].value = value.default
-      } else {
+      } else if (value) {
         field[index] = this._resetFields(value)
       }
     }

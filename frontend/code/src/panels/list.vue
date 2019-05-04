@@ -8,7 +8,7 @@
     </div>
     <b-table ref="table" :busy.sync="isBusy" show-empty striped bordered hover :items="provider" :fields="fields">
       <template slot="actions" slot-scope="data">
-        (NO ACTIONS)
+        <edit-dialog :panel_uid="data.item.uid" @success="fetchData"></edit-dialog>
       </template>
       <template slot="empty">
         Brak elementów do wyświetlenia.
@@ -20,6 +20,7 @@
 <script>
 import panelResource from '@/panels/resource'
 import newDialog from '@/panels/dialogs/new'
+import editDialog from '@/panels/dialogs/edit'
 
 export default {
   data () {
@@ -27,7 +28,8 @@ export default {
       isBusy: false,
       fields: [
         {key: 'name', label: 'Tytuł'},
-        {key: 'description', label: 'Opis'}],
+        {key: 'description', label: 'Opis'},
+        {key: 'actions', label: 'Akcje'}],
       items: [],
       resource: panelResource(this)
     }
@@ -43,7 +45,8 @@ export default {
     }
   },
   components: {
-    newDialog
+    newDialog,
+    editDialog
   }
 }
 </script>
