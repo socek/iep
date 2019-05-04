@@ -13,6 +13,7 @@
       <nav class="col-md-1 d-none d-md-block bg-light sidebar" v-if="isAuthenticated">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
+            <sidebar></sidebar>
           </ul>
         </div>
       </nav>
@@ -27,6 +28,7 @@
 <script>
   import login from '@/auth/login'
   import register from '@/auth/register'
+  import sidebar from '@/sidebar/sidebar'
 
   export default {
     computed: {
@@ -40,7 +42,8 @@
     name: 'app',
     components: {
       login,
-      register
+      register,
+      sidebar
     }
   }
 </script>

@@ -44,7 +44,7 @@ export default {
         () => this.resource.signUp({}, form.toData()),
         (response) => {
           this.$store.commit('auth/logIn', response.body.jwt)
-          this.$router.push({name: 'WalletList'})
+          this.$router.push({name: 'PanelList'})
         }
       )
     }
