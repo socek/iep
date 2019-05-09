@@ -31,3 +31,14 @@ class ModelSchema(BaseSchema):
         Create model from serialized data.
         """
         return self.MODEL(**data)
+
+
+class DataModelSchema(BaseSchema):
+    uid = UUID(required=True, allow_none=False)
+
+    @pre_dump
+    def make_dict(self, obj):
+        """
+        Serialize to dict object.
+        """
+        return obj if isinstance(obj, dict) else obj.to_dict()
