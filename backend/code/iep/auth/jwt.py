@@ -1,8 +1,8 @@
 from jwt import decode
 from jwt import encode
+from sapp import Decorator
 
 from iep import app
-from iep.application.app import Decorator
 
 
 @Decorator(app, "settings")

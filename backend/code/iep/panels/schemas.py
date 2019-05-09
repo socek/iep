@@ -1,7 +1,9 @@
 from marshmallow import Schema
+from marshmallow.fields import Boolean
 from marshmallow.fields import String
-from iep.panels.models import Panel
+
 from iep.application.schemas import ModelSchema
+from iep.panels.models import Panel
 
 
 class PanelSchema(ModelSchema):
@@ -12,6 +14,7 @@ class PanelSchema(ModelSchema):
     additional = String()
     creator = String()
     room = String()
+    accepted = Boolean()
 
 
 class PanelSchemaUpdate(Schema):
@@ -21,3 +24,4 @@ class PanelSchemaUpdate(Schema):
     additional = String()
     creator = String()
     room = String()
+    accepted = Boolean()

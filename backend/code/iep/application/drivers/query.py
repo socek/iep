@@ -1,10 +1,10 @@
 from uuid import UUID
 
+from sapp import Decorator
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import NoResultFound as SANoResultFound
 
 from iep import app
-from iep.application.app import Decorator
 
 
 class NoResultFound(Exception):
@@ -48,6 +48,7 @@ class ListActiveForModel(BaseForModel):
     """
     List all not delated (is_active==True) rows from the database.
     """
+
     @Decorator(app, "dbsession")
     def _list_active(self, dbsession):
         return dbsession.query(self.model).filter(self.model.is_active.is_(True))

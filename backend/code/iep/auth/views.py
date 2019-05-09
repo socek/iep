@@ -1,9 +1,8 @@
 from pyramid.httpexceptions import HTTPBadRequest
+from sapp import Decorator
 from sqlalchemy.exc import IntegrityError
 
 from iep import app
-from iep.application.app import ContextManager
-from iep.application.app import Decorator
 from iep.application.views import RestfulView
 from iep.auth.drivers import command
 from iep.auth.drivers import query

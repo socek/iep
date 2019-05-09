@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sapp = "==0.3"
+sapp = "==0.4.0"
 python-decouple = "*"
 ipython = "*"
 pyramid = "*"

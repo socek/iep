@@ -1,0 +1,6 @@
+- autoryzacja? JWT?
+- jaka licencja? Apache 2.0 ?
+- potrzebujemy repo czy github?
+- potrzebujemy aplikacji do zadań? youtrack ?
+- potrzebujemy rejestru?
+- potrzebujemy CI?

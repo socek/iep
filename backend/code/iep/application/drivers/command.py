@@ -1,5 +1,6 @@
+from sapp import Decorator
+
 from iep import app
-from iep.application.app import Decorator
 
 
 class BaseForModel(object):
@@ -14,6 +15,7 @@ class SaveNewForModel(BaseForModel):
     Example:
         save_new(name="my name is", surname="slimshady")
     """
+
     def __call__(self, *args, **kwargs):
         obj = self.model()
         for key, value in kwargs.items():
@@ -36,6 +38,7 @@ class UpdateByIdForModel(BaseForModel):
     Example:
         update_by_id(uid, {name:"marshal matters"})
     """
+
     def __call__(self, uid, update):
         update_raw = {}
         for key, value in update.items():
@@ -55,6 +58,7 @@ class DeleteByIdForModel(UpdateByIdForModel):
     Example:
         delete_by_id(uid)
     """
+
     def __call__(self, uid):
         super().__call__(uid, {"is_active": False})
 
@@ -67,6 +71,7 @@ class ForceDeleteForModel(BaseForModel):
     Example:
         force_delete(uid)
     """
+
     @Decorator(app, "dbsession")
     def __call__(self, uid, dbsession):
         dbsession.query(self.model).filter(self.model.uid == uid).delete()

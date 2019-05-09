@@ -12,6 +12,7 @@ class Panel(Model):
         additional=None,
         creator=None,
         room=None,
+        accepted=None,
     ):
         super().__init__(uid, created_at, updated_at)
         self.name = name
@@ -19,6 +20,7 @@ class Panel(Model):
         self.additional = additional
         self.creator = creator
         self.room = room
+        self.accepted = accepted
 
     def to_dict(self):
         return dict(
@@ -30,4 +32,5 @@ class Panel(Model):
             additional=self.additional,
             creator=self.creator,
             room=self.room,
+            accepted=self.accepted,
         )

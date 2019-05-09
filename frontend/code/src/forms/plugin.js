@@ -4,6 +4,7 @@ import ccform from './form'
 import dateInput from './date'
 import dropdown from './dropdown'
 import dialogform from './dialog_form'
+import checkbox from './checkbox'
 
 export default {
   install (Vue, options) {
@@ -13,5 +14,6 @@ export default {
     Vue.component('dialogform', dialogform)
     Vue.component('date-input', dateInput)
     Vue.component('dropdown', dropdown)
+    Vue.component('checkbox', checkbox)
   }
 }

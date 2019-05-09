@@ -32,5 +32,6 @@ COPY --chown=user:user code $APP_DIR
 RUN pipenv run python setup.py develop
 RUN pipenv run pytest -k "not integration"
 
+ENTRYPOINT ["pipenv", "run"]
 CMD ./start.sh
 EXPOSE 18765

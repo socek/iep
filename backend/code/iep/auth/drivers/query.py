@@ -1,4 +1,5 @@
-from iep import Decorator
+from sapp import Decorator
+
 from iep import app
 from iep.application.drivers.query import GetActiveByUidForModel
 from iep.application.drivers.query import ListActiveForModel

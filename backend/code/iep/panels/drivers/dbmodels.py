@@ -1,4 +1,3 @@
-from sqlalchemy import Binary
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import String
@@ -16,4 +15,4 @@ class PanelData(SqlDataModel):
     additional = Column(String)
     creator = Column(String)
     room = Column(String)
-
+    accepted = Column(Boolean, default=False)

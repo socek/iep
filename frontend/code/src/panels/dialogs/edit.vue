@@ -9,6 +9,7 @@
       <text-input v-model="form.name" label="Tytuł" placeholder="Tytuł"></text-input>
       <text-input v-model="form.description" label="Opis" placeholder="Opis widoczny w programie konwentu"></text-input>
       <text-input v-model="form.additional" label="Dodatkowy opis" placeholder="Dodatkowy opis widoczny tylko dla obsługi"></text-input>
+      <checkbox v-model="form.accepted" label="Zaakceptowane"></checkbox>
     </template>
   </dialogform>
 </template>
@@ -25,7 +26,8 @@ export default {
       form: form({
         name: '',
         description: '',
-        additional: ''}),
+        additional: '',
+        checkbox: ''}),
       resource: panelResource(this)
     }
   },

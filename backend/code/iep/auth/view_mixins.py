@@ -1,7 +1,7 @@
 from pyramid.httpexceptions import HTTPUnauthorized
+from sapp import Decorator
 from sqlalchemy.orm.exc import NoResultFound
 
-from iep import Decorator
 from iep import app
 from iep.application.cache import cache_per_request
 from iep.application.views import RestfulView

@@ -109,6 +109,7 @@ class TestPanelView(ViewFixture):
 
         assert view.get() == {
             "uid": uid.hex,
+            "accepted": None,
             "name": "my new panel",
             "additional": None,
             "creator": None,
