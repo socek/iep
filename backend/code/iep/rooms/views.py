@@ -27,10 +27,10 @@ class RoomsView(AuthenticatedView):
         """
         schema = RoomSchema()
         room = self.get_validated_fields(schema, partial=("uid",))
-        uid = save_new(**room.to_dict())
+        uid = save_new(**room)
 
-        log.info("Created new Panel: {0}".format(uid))
-        log.debug("{}:{}".format(uid, room.to_dict()))
+        log.info("Created new Room: {0}".format(uid))
+        log.debug("{}:{}".format(uid, room))
 
         return {"is_success": True, "uid": uid}
 
@@ -54,7 +54,7 @@ class RoomView(AuthenticatedView):
         update = self.get_validated_fields(RoomSchema(), partial=("uid",))
         update_by_uid(uid, update)
 
-        log.info("Updated Panel: {0}".format(uid))
+        log.info("Updated Room: {0}".format(uid))
         log.debug("{}:{}".format(uid, update))
 
     @cache_per_request("room")
