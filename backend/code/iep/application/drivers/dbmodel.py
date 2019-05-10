@@ -60,7 +60,10 @@ class Base(object):
         """
         Create normal model from the SqlDataModel.
         """
-        return self._model(**self.to_dict())
+        if self._model:
+            return self._model(**self.to_dict())
+        else:
+            return self.to_dict()
 
 
 SqlDataModel = declarative_base(metadata=metadata, cls=Base)

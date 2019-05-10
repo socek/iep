@@ -27,7 +27,7 @@ export default {
         name: '',
         description: '',
         additional: '',
-        checkbox: ''}),
+        accepted: ''}),
       resource: panelResource(this)
     }
   },
