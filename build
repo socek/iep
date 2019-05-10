@@ -1,0 +1,6 @@
+#!/bin/bash
+docker build backend -t registry.socek.org/iep-backend:${VERSION}
+docker build frontend -t registry.socek.org/iep-frontend:${VERSION}
+
+docker push registry.socek.org/iep-backend:${VERSION}
+docker push registry.socek.org/iep-frontend:${VERSION}
