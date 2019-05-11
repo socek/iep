@@ -1,6 +1,23 @@
 #!/bin/bash
+set -x
 docker build backend -t registry.socek.org/iep-backend:0.0.${BUILD_NUMBER}
+ER=$?
+if [ "$ER" != "0" ] ; then
+    exit $ER
+fi
 docker build frontend -t registry.socek.org/iep-frontend:0.0.${BUILD_NUMBER}
+ER=$?
+if [ "$ER" != "0" ] ; then
+    exit $ER
+fi
 
 docker push registry.socek.org/iep-backend:0.0.${BUILD_NUMBER}
+ER=$?
+if [ "$ER" != "0" ] ; then
+    exit $ER
+fi
 docker push registry.socek.org/iep-frontend:0.0.${BUILD_NUMBER}
+ER=$?
+if [ "$ER" != "0" ] ; then
+    exit $ER
+fi
