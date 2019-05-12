@@ -14,6 +14,7 @@ class RestfulView(BaseRestfulView):
         except JSONDecodeError:
             raise HTTPNotAcceptable()
         except ValidationError as error:
+            print(error)
             raise HTTPBadRequest(json=error.messages)
 
     def validate(self):

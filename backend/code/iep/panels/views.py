@@ -30,7 +30,7 @@ class PanelsView(AuthenticatedView):
         panel = self.get_validated_fields(schema, partial=("uid",))
         uid = save_new(**panel.to_dict())
 
-        log.info("Created new Panel: {0}".format(uid))
+        log.info("Created new Panel: {0} by {1}".format(uid, self.get_user_id()))
         log.debug("{}:{}".format(uid, panel.to_dict()))
 
         return {"is_success": True, "uid": uid}
@@ -55,7 +55,7 @@ class PanelView(AuthenticatedView):
         update = self.get_validated_fields(PanelSchemaUpdate(), partial=("uid",))
         update_by_uid(uid, update)
 
-        log.info("Updated Panel: {0}".format(uid))
+        log.info("Updated Panel: {0} by {1}".format(uid, self.get_user_id()))
         log.debug("{}:{}".format(uid, update))
 
     @cache_per_request("panel")
