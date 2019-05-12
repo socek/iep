@@ -3,12 +3,13 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1 class="h2"><icon name="shoe-prints" /> Konwenty</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
-          <new-dialog @success="fetchData"></new-dialog>
+          <new-dialog></new-dialog>
       </div>
     </div>
     <b-table ref="table" :busy.sync="isBusy" show-empty striped bordered hover :items="provider" :fields="fields">
       <template slot="actions" slot-scope="data">
-        <edit-dialog :convention_uid="data.item.uid" @success="fetchData"></edit-dialog>
+        <edit-dialog :convention_uid="data.item.uid"></edit-dialog>
+        <button class="btn btn-sm btn-success" @click="activate(data.item.uid)">Aktywuj</button>
       </template>
       <template slot="empty">
         Brak elementów do wyświetlenia.
@@ -18,7 +19,6 @@
 </template>
 
 <script>
-import conventionResource from '@/conventions/resource'
 import newDialog from '@/conventions/dialogs/new'
 import editDialog from '@/conventions/dialogs/edit'
 
@@ -31,18 +31,17 @@ export default {
         {key: 'start_date', label: 'Początek'},
         {key: 'end_date', label: 'Zakończenie'},
         {key: 'actions', label: 'Akcje'}],
-      items: [],
-      resource: conventionResource(this)
+      items: []
     }
   },
   methods: {
+    activate (uid) {
+      this.$store.commit('conventions/setActive', uid)
+    }
+  },
+  computed: {
     provider (ctx) {
-      return this.resource.list().then((response) => {
-        return response.data
-      })
-    },
-    fetchData () {
-      this.$refs.table.refresh()
+      return this.$store.state.conventions.conventions
     }
   },
   components: {

@@ -34,7 +34,7 @@ export default {
         () => conventResource(this).create({}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$emit('success')
+          this.$store.dispatch('conventions/fetchConventions')
         }
       )
     }

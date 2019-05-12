@@ -3,12 +3,18 @@
 
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-1 mr-0 btn btn-outline-primary " href="#/">Imladris Event</a>
-      <ul v-if="isAuthenticated" class="nav navbar-nav col-sm-10">
+      <ul v-if="isAuthenticated" class="nav navbar-nav col-sm-1">
         <li class="nav-item text-nowrap">
           <router-link class="nav-link" :to="{ name: 'ConventionList'}" :class="{active: isConventionListActive()}">
             <icon name="monument" /> Konwenty
           </router-link></li>
       </ul>
+
+      <div class="nav-item col-sm-1">
+        <p class="navbar-text text-nowrap"  v-if="isAuthenticated && isSidebarActive">{{ activeConvention.name }}</p>
+      </div>
+
+      <div class="nav-item text-nowrap col-sm-8">&nbsp;</div>
       <ul class="navbar-nav px-3">
         <login v-if="isAuthenticated"></login>
         <register v-if="!isAuthenticated"></register>
@@ -16,7 +22,7 @@
     </nav>
 
     <div class="container-fluid">
-      <nav class="col-sm-3 col-md-1 mr-0 d-none d-md-block bg-light sidebar" v-if="isAuthenticated">
+      <nav class="col-sm-3 col-md-1 mr-0 d-none d-md-block bg-light sidebar" v-if="isAuthenticated && isSidebarActive">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <sidebar></sidebar>
@@ -24,7 +30,7 @@
         </div>
       </nav>
 
-      <main role="main" class="col-md-10 ml-sm-auto" :class="{'col-lg-11': isAuthenticated, 'col-lg-12': !isAuthenticated}">
+      <main role="main" class="col-md-10 ml-sm-auto" :class="{'col-lg-11': isAuthenticated && isSidebarActive, 'col-lg-12': !(isAuthenticated && isSidebarActive)}">
         <router-view></router-view>
       </main>
     </div>
@@ -43,12 +49,19 @@
       }
     },
     computed: {
+      activeConvention () {
+        return this.$store.state.conventions.active
+      },
       isAuthenticated () {
         return this.$store.getters['auth/isAuthenticated']
+      },
+      isSidebarActive () {
+        return this.$store.state.conventions.active != null
       }
     },
     created () {
       this.$store.commit('init', this)
+      this.$store.dispatch('conventions/fetchConventions')
     },
     name: 'app',
     components: {

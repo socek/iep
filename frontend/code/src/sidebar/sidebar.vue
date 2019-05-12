@@ -21,6 +21,9 @@
 
   export default {
     methods: {
+      isActive () {
+        return false
+      },
       isPanelActive (wallet) {
         return this.$route.name === 'PanelDashboard' && this.$route.params.wallet_uid === wallet.uid
       },

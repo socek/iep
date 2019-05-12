@@ -62,4 +62,3 @@ class TestBase(object):
         base.updated_at = datetime.now()
 
         assert base.to_model() == mto_dict.return_value
-

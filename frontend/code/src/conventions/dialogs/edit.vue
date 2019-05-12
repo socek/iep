@@ -39,7 +39,7 @@ export default {
         () => conventResource(this).update({convention_uid: this.convention_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$emit('success')
+          this.$store.dispatch('conventions/fetchConventions')
         }
       )
     }
