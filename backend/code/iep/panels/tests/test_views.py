@@ -1,4 +1,3 @@
-from datetime import datetime
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -41,8 +40,10 @@ class TestPanelsView(ViewFixture):
         """
         mrequest.json_body = {
             "name": "Name",
-            "start_date": datetime.now().isoformat(),
-            "end_date": datetime.now().isoformat(),
+            "description": "Description",
+            "additional": "Additional",
+            "creator": "Creator",
+            "room": "101",
         }
 
         assert view.put() == {"is_success": True, "uid": msave.return_value}

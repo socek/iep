@@ -185,3 +185,8 @@ class ViewFixture(ViewFixtureMixin):
         with patch.object(view, "get_user", autospec=True) as mock:
             mock.return_value.uid = uuid4()
             yield mock
+
+    @fixture(autouse=True)
+    def mget_user_id(self, view):
+        with patch.object(view, "get_user_id", autospec=True):
+            yield uuid4()

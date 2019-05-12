@@ -1,16 +1,22 @@
 <template>
   <div>
 
-   <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-     <a class="navbar-brand col-sm-3 col-md-1 mr-0" href="#/">Imladris Event Planner</a>
-     <ul class="navbar-nav px-3">
-       <login v-if="isAuthenticated"></login>
-       <register v-if="!isAuthenticated"></register>
-     </ul>
-   </nav>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-1 mr-0 btn btn-outline-primary " href="#/">Imladris Event</a>
+      <ul v-if="isAuthenticated" class="nav navbar-nav col-sm-10">
+        <li class="nav-item text-nowrap">
+          <router-link class="nav-link" :to="{ name: 'ConventionList'}" :class="{active: isConventionListActive()}">
+            <icon name="monument" /> Konwenty
+          </router-link></li>
+      </ul>
+      <ul class="navbar-nav px-3">
+        <login v-if="isAuthenticated"></login>
+        <register v-if="!isAuthenticated"></register>
+      </ul>
+    </nav>
 
     <div class="container-fluid">
-      <nav class="col-md-1 d-none d-md-block bg-light sidebar" v-if="isAuthenticated">
+      <nav class="col-sm-3 col-md-1 mr-0 d-none d-md-block bg-light sidebar" v-if="isAuthenticated">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <sidebar></sidebar>
@@ -31,6 +37,11 @@
   import sidebar from '@/sidebar/sidebar'
 
   export default {
+    methods: {
+      isConventionListActive () {
+        return this.$route.name === 'ConventionList'
+      }
+    },
     computed: {
       isAuthenticated () {
         return this.$store.getters['auth/isAuthenticated']

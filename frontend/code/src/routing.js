@@ -6,6 +6,7 @@ import store from '@/store'
 import NotLoggedIn from '@/auth/not-logged-in'
 import PanelList from '@/panels/list'
 import RoomList from '@/rooms/list'
+import ConventionList from '@/conventions/list'
 
 Vue.use(Router)
 
@@ -40,6 +41,12 @@ let router = new Router({
     },
     {
       path: '/',
+      name: 'ConventionList',
+      component: ConventionList,
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/panels',
       name: 'PanelList',
       component: PanelList,
       beforeEnter: requireAuth

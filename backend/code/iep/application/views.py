@@ -1,10 +1,13 @@
 from json.decoder import JSONDecodeError
+from logging import getLogger
 
 from marshmallow.exceptions import ValidationError
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotAcceptable
 
 from sapp.plugins.pyramid.views import RestfulView as BaseRestfulView
+
+log = getLogger(__name__)
 
 
 class RestfulView(BaseRestfulView):
@@ -14,7 +17,7 @@ class RestfulView(BaseRestfulView):
         except JSONDecodeError:
             raise HTTPNotAcceptable()
         except ValidationError as error:
-            print(error)
+            log.debug(error)
             raise HTTPBadRequest(json=error.messages)
 
     def validate(self):
