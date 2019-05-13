@@ -11,6 +11,9 @@ import ConventionList from '@/conventions/list'
 Vue.use(Router)
 
 export function requireAuth (to, from, next) {
+  if (to.params.convention_uid) {
+    store.commit('conventions/setActive', to.params.convention_uid)
+  }
   if (!store.getters['auth/isAuthenticated']) {
     next({
       name: 'NotLoggedIn',
@@ -46,13 +49,13 @@ let router = new Router({
       beforeEnter: requireAuth
     },
     {
-      path: '/panels',
+      path: '/conventions/:convention_uid/panels',
       name: 'PanelList',
       component: PanelList,
       beforeEnter: requireAuth
     },
     {
-      path: '/rooms',
+      path: '/conventions/:convention_uid/rooms',
       name: 'RoomList',
       component: RoomList,
       beforeEnter: requireAuth

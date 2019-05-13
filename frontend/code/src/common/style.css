@@ -164,3 +164,8 @@ main {
 .b-form-group.form-group .datetime-picker.form-control input:active {
   border: 0;
 }
+
+.nav-item .navbar-brand {
+  padding-left: 10px;
+  padding-right: 10px;
+}

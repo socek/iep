@@ -7,7 +7,11 @@ export default {
     dict: {},
     active: null
   },
-  getters: {},
+  getters: {
+    isActive (state) {
+      return state.dict[state.active]
+    }
+  },
   mutations: {
     setConventions (state, conventions) {
       state.conventions = conventions
@@ -17,11 +21,7 @@ export default {
       }
     },
     setActive (state, uid) {
-      if (uid) {
-        state.active = state.dict[uid]
-      } else {
-        state.active = null
-      }
+      state.active = uid
     }
   },
   actions: {

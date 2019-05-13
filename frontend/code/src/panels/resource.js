@@ -1,6 +1,8 @@
 export default (vue) => vue.$resource(
-  'panels{/panel_uid}',
-  {},
+  'conventions/{convention_uid}/panels{/panel_uid}',
+  {
+    convention_uid: vue.$route.params.convention_uid
+  },
   {
     list: {method: 'GET'},
     create: {method: 'PUT'},

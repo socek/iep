@@ -11,7 +11,9 @@
       </ul>
 
       <div class="nav-item col-sm-1">
-        <p class="navbar-text text-nowrap"  v-if="isAuthenticated && isSidebarActive">{{ activeConvention.name }}</p>
+        <div class="navbar-brand" v-if="isSidebarActive && activeConvention">
+          Konwent: {{ activeConvention.name }}
+        </div>
       </div>
 
       <div class="nav-item text-nowrap col-sm-8">&nbsp;</div>
@@ -22,7 +24,7 @@
     </nav>
 
     <div class="container-fluid">
-      <nav class="col-sm-3 col-md-1 mr-0 d-none d-md-block bg-light sidebar" v-if="isAuthenticated && isSidebarActive">
+      <nav class="col-sm-3 col-md-1 mr-0 d-none d-md-block bg-light sidebar" v-if="isSidebarActive">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <sidebar></sidebar>
@@ -30,7 +32,7 @@
         </div>
       </nav>
 
-      <main role="main" class="col-md-10 ml-sm-auto" :class="{'col-lg-11': isAuthenticated && isSidebarActive, 'col-lg-12': !(isAuthenticated && isSidebarActive)}">
+      <main role="main" class="col-md-10 ml-sm-auto" :class="{'col-lg-11': isSidebarActive, 'col-lg-12': !(isSidebarActive)}">
         <router-view></router-view>
       </main>
     </div>
@@ -50,13 +52,13 @@
     },
     computed: {
       activeConvention () {
-        return this.$store.state.conventions.active
+        return this.$store.getters['conventions/isActive']
       },
       isAuthenticated () {
         return this.$store.getters['auth/isAuthenticated']
       },
       isSidebarActive () {
-        return this.$store.state.conventions.active != null
+        return this.$store.getters['auth/isAuthenticated'] && this.$store.state.conventions.active !== null
       }
     },
     created () {
