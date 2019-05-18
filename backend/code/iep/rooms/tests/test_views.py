@@ -17,8 +17,8 @@ class TestRoomsView(ViewFixture):
         return RoomsView(mroot_factory, mrequest)
 
     @fixture
-    def mlist_active(self):
-        with patch("iep.rooms.views.list_active") as mock:
+    def mlist_active_by_convention(self):
+        with patch("iep.rooms.views.list_active_by_convention") as mock:
             yield mock
 
     @fixture
@@ -26,12 +26,14 @@ class TestRoomsView(ViewFixture):
         with patch("iep.rooms.views.save_new") as mock:
             yield mock
 
-    def test_get(self, view, mlist_active):
+    def test_get(self, view, mlist_active_by_convention, mrequest):
         """
         GET should return serialized list of all active rooms.
         """
         assert view.get() == []
-        mlist_active.assert_called_once_with()
+        mlist_active_by_convention.assert_called_once_with(
+            mrequest.matchdict["convention_uid"]
+        )
 
     def test_put(self, view, msave, mrequest):
         """
@@ -71,6 +73,11 @@ class TestRoomView(ViewFixture):
         with patch.object(view, "get_user") as mock:
             yield mock
 
+    @fixture
+    def mget_convention(self, view):
+        with patch.object(view, "get_convention") as mock:
+            yield mock
+
     def test_get_room_when_not_present(self, view, mrequest, mget_active_by_uid):
         """
         ._get_room should raise HTTPNotFound error when room is not present.
@@ -89,13 +96,14 @@ class TestRoomView(ViewFixture):
         assert view._get_room() == mget_active_by_uid.return_value
         mget_active_by_uid.assert_called_once_with(mrequest.matchdict["room_uid"])
 
-    def test_validate(self, view, mget_room, mget_user):
+    def test_validate(self, view, mget_room, mget_user, mget_convention):
         """
         .validate should check if room exists and if user is logged in
         """
         view.validate()
         mget_room.assert_called_once_with()
         mget_user.assert_called_once_with()
+        mget_convention.assert_called_once_with()
 
     def test_get(self, view, mget_room):
         """
@@ -104,10 +112,7 @@ class TestRoomView(ViewFixture):
         uid = uuid4()
         mget_room.return_value = {"uid": uid, "name": "my new room"}
 
-        assert view.get() == {
-            "uid": uid.hex,
-            "name": "my new room",
-        }
+        assert view.get() == {"uid": uid.hex, "name": "my new room"}
 
     def test_patch(self, view, mrequest, mupdate_by_uid):
         """
@@ -124,10 +129,5 @@ class TestRoomView(ViewFixture):
         view.patch()
 
         mupdate_by_uid.assert_called_once_with(
-            uid,
-            {
-                "floor": "Additional",
-                "name": "Name",
-                "number": "Description",
-            },
+            uid, {"floor": "Additional", "name": "Name", "number": "Description"}
         )

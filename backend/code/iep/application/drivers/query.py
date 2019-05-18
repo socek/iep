@@ -51,7 +51,11 @@ class ListActiveForModel(BaseForModel):
 
     @Decorator(app, "dbsession")
     def _list_active(self, dbsession):
-        return dbsession.query(self.model).filter(self.model.is_active.is_(True)).order_by(self.model.created_at.desc())
+        return (
+            dbsession.query(self.model)
+            .filter(self.model.is_active.is_(True))
+            .order_by(self.model.created_at.desc())
+        )
 
     def __call__(self):
         for row in self._list_active():

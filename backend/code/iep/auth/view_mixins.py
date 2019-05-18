@@ -1,9 +1,7 @@
 from pyramid.httpexceptions import HTTPUnauthorized
-from sapp import Decorator
-from sqlalchemy.orm.exc import NoResultFound
 
-from iep import app
 from iep.application.cache import cache_per_request
+from iep.application.drivers.query import NoResultFound
 from iep.application.views import RestfulView
 from iep.auth.drivers import query
 from iep.auth.jwt import decode_jwt
@@ -11,8 +9,7 @@ from iep.auth.jwt import decode_jwt
 
 class AuthMixin(object):
     @cache_per_request("user")
-    @Decorator(app, "dbsession")
-    def get_user(self, dbsession):
+    def get_user(self):
         """
         Get current logged in user depending on the JWT token.
         """

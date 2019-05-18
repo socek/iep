@@ -13,6 +13,7 @@ class Panel(Model):
         creator=None,
         room=None,
         accepted=None,
+        convention_uid=None,
     ):
         super().__init__(uid, created_at, updated_at)
         self.name = name
@@ -21,6 +22,7 @@ class Panel(Model):
         self.creator = creator
         self.room = room
         self.accepted = accepted
+        self.convention_uid = convention_uid
 
     def to_dict(self):
         return dict(
@@ -33,4 +35,5 @@ class Panel(Model):
             creator=self.creator,
             room=self.room,
             accepted=self.accepted,
+            convention_uid=self.convention_uid,
         )

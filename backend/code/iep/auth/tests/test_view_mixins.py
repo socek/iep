@@ -5,9 +5,9 @@ from unittest.mock import sentinel
 from pyramid.httpexceptions import HTTPUnauthorized
 from pytest import fixture
 from pytest import raises
-from sqlalchemy.orm.exc import NoResultFound
 from undecorated import undecorated
 
+from iep.application.drivers.query import NoResultFound
 from iep.application.testing import ViewFixture
 from iep.auth.view_mixins import AuthMixin
 from iep.auth.view_mixins import AuthenticatedView
@@ -53,7 +53,7 @@ class TestAuthMixin(object):
         """
         .get_user should return authenticated user when proper jwt provided.
         """
-        assert get_user(mixin, dbsession=mdb) == mquery.get_active_by_uid.return_value
+        assert get_user(mixin) == mquery.get_active_by_uid.return_value
         mquery.get_active_by_uid.assert_called_once_with(sentinel.user_id)
 
     def test_decoded_jwt_no_jwt_provided(self, mixin, mrequest, mdecode_jwt):
@@ -104,7 +104,7 @@ class TestAuthenticatedView(ViewFixture):
         """
         .validate should raise HTTPUnauthorized when the user is not found
         """
-        mget_user.side_effect = NoResultFound()
+        mget_user.side_effect = NoResultFound
 
         with raises(HTTPUnauthorized):
             view.validate()

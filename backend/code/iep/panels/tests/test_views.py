@@ -18,8 +18,8 @@ class TestPanelsView(ViewFixture):
         return PanelsView(mroot_factory, mrequest)
 
     @fixture
-    def mlist_active(self):
-        with patch("iep.panels.views.list_active") as mock:
+    def mlist_active_by_convention(self):
+        with patch("iep.panels.views.list_active_by_convention") as mock:
             yield mock
 
     @fixture
@@ -27,12 +27,12 @@ class TestPanelsView(ViewFixture):
         with patch("iep.panels.views.save_new") as mock:
             yield mock
 
-    def test_get(self, view, mlist_active):
+    def test_get(self, view, mlist_active_by_convention, mrequest):
         """
         GET should return serialized list of all active panels.
         """
         assert view.get() == []
-        mlist_active.assert_called_once_with()
+        mlist_active_by_convention.assert_called_once_with(mrequest.matchdict["convention_id"])
 
     def test_put(self, view, msave, mrequest):
         """
@@ -74,6 +74,11 @@ class TestPanelView(ViewFixture):
         with patch.object(view, "get_user") as mock:
             yield mock
 
+    @fixture
+    def mget_convention(self, view):
+        with patch.object(view, "get_convention") as mock:
+            yield mock
+
     def test_get_panel_when_not_present(self, view, mrequest, mget_active_by_uid):
         """
         ._get_panel should raise HTTPNotFound error when panel is not present.
@@ -92,13 +97,14 @@ class TestPanelView(ViewFixture):
         assert view._get_panel() == mget_active_by_uid.return_value
         mget_active_by_uid.assert_called_once_with(mrequest.matchdict["panel_uid"])
 
-    def test_validate(self, view, mget_panel, mget_user):
+    def test_validate(self, view, mget_panel, mget_user, mget_convention):
         """
         .validate should check if panel exists and if user is logged in
         """
         view.validate()
         mget_panel.assert_called_once_with()
         mget_user.assert_called_once_with()
+        mget_convention.assert_called_once_with()
 
     def test_get(self, view, mget_panel):
         """
@@ -110,6 +116,7 @@ class TestPanelView(ViewFixture):
         assert view.get() == {
             "uid": uid.hex,
             "accepted": None,
+            "convention_uid": None,
             "name": "my new panel",
             "additional": None,
             "creator": None,

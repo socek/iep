@@ -4,23 +4,25 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from iep.application.cache import cache_per_request
 from iep.application.drivers.query import NoResultFound
+from iep.conventions.view_mixins import BaseConventionView
 from iep.panels.drivers.command import save_new
 from iep.panels.drivers.command import update_by_uid
 from iep.panels.drivers.query import get_active_by_uid
-from iep.panels.drivers.query import list_active
+from iep.panels.drivers.query import list_active_by_convention
 from iep.panels.schemas import PanelSchema
 from iep.panels.schemas import PanelSchemaUpdate
-from iep.auth.view_mixins import AuthenticatedView
 
 log = getLogger(__name__)
 
 
-class PanelsView(AuthenticatedView):
+class PanelsView(BaseConventionView):
     def get(self):
         """
         List all active panels.
         """
-        return PanelSchema(many=True).dump(list_active())
+        return PanelSchema(many=True).dump(
+            list_active_by_convention(self._convention_uid)
+        )
 
     def put(self):
         """
@@ -28,6 +30,7 @@ class PanelsView(AuthenticatedView):
         """
         schema = PanelSchema()
         panel = self.get_validated_fields(schema, partial=("uid",))
+        panel.convention_uid = self._convention_uid
         uid = save_new(**panel.to_dict())
 
         log.info("Created new Panel: {0} by {1}".format(uid, self.get_user_id()))
@@ -36,7 +39,7 @@ class PanelsView(AuthenticatedView):
         return {"is_success": True, "uid": uid}
 
 
-class PanelView(AuthenticatedView):
+class PanelView(BaseConventionView):
     def validate(self):
         super().validate()
         self._get_panel()

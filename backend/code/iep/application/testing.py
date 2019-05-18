@@ -3,7 +3,8 @@ from unittest.mock import PropertyMock
 from unittest.mock import patch
 from uuid import uuid4
 
-from pytest import fixture, mark
+from pytest import fixture
+from pytest import mark
 from sapp.plugins.pyramid.testing import BaseWebTestFixture
 from sapp.plugins.pyramid.testing import ViewFixtureMixin
 from sapp.plugins.sqlalchemy.recreate import RecreateDatabases
@@ -15,6 +16,8 @@ from iep.application.app import IAPConfigurator
 from iep.auth.drivers import command as user_command
 from iep.auth.drivers import query as user_query
 from iep.auth.models import User
+from iep.conventions.drivers import command as convention_command
+from iep.conventions.drivers import query as convention_query
 
 
 class DeleteOnExit(object):
@@ -128,6 +131,18 @@ class IntegrationFixture(IAPFixturesMixin):
             self.SESSION_CACHE[self.CONFIGURATOR_KEY] = app
             self.after_configurator_start(app)
         return self.SESSION_CACHE[self.CONFIGURATOR_KEY]
+
+    @fixture
+    def convention1_uid(self):
+        uid = convention_command.save_new(name="convention 1")
+        yield uid
+        convention_command.force_delete(uid)
+
+    @fixture
+    def convention2_uid(self):
+        uid = convention_command.save_new(name="convention 2")
+        yield uid
+        convention_command.force_delete(uid)
 
 
 class WebTestFixture(IAPFixturesMixin, BaseWebTestFixture):
