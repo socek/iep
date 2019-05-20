@@ -7,7 +7,6 @@ from pytest import raises
 
 from iep.application.drivers.query import NoResultFound
 from iep.application.testing import ViewFixture
-from iep.panels.models import Panel
 from iep.panels.views import PanelView
 from iep.panels.views import PanelsView
 
@@ -111,17 +110,14 @@ class TestPanelView(ViewFixture):
         .get should return serialized panel
         """
         uid = uuid4()
-        mget_panel.return_value = Panel(uid, name="my new panel")
+        mget_panel.return_value = {
+            "uid": uid,
+            "name": "my new panel",
+        }
 
         assert view.get() == {
             "uid": uid.hex,
-            "accepted": None,
-            "convention_uid": None,
             "name": "my new panel",
-            "additional": None,
-            "creator": None,
-            "description": None,
-            "room": None,
         }
 
     def test_patch(self, view, mrequest, mupdate_by_uid):

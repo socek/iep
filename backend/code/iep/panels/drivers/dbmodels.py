@@ -5,12 +5,10 @@ from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 
 from iep.application.drivers.dbmodel import SqlDataModel
-from iep.panels.models import Panel
 
 
 class PanelData(SqlDataModel):
     __tablename__ = "panels"
-    _model = Panel
 
     convention_uid = Column(UUID(as_uuid=True), ForeignKey('conventions.uid'))
     name = Column(String, nullable=True)

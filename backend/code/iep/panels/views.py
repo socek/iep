@@ -10,7 +10,6 @@ from iep.panels.drivers.command import update_by_uid
 from iep.panels.drivers.query import get_active_by_uid
 from iep.panels.drivers.query import list_active_by_convention
 from iep.panels.schemas import PanelSchema
-from iep.panels.schemas import PanelSchemaUpdate
 
 log = getLogger(__name__)
 
@@ -30,11 +29,11 @@ class PanelsView(BaseConventionView):
         """
         schema = PanelSchema()
         panel = self.get_validated_fields(schema, partial=("uid",))
-        panel.convention_uid = self._convention_uid
-        uid = save_new(**panel.to_dict())
+        panel["convention_uid"] = self._convention_uid
+        uid = save_new(**panel)
 
         log.info("Created new Panel: {0} by {1}".format(uid, self.get_user_id()))
-        log.debug("{}:{}".format(uid, panel.to_dict()))
+        log.debug("{}:{}".format(uid, panel))
 
         return {"is_success": True, "uid": uid}
 
@@ -55,7 +54,7 @@ class PanelView(BaseConventionView):
         Update panel data.
         """
         uid = self.request.matchdict["panel_uid"]
-        update = self.get_validated_fields(PanelSchemaUpdate(), partial=("uid",))
+        update = self.get_validated_fields(PanelSchema(), partial=("uid",))
         update_by_uid(uid, update)
 
         log.info("Updated Panel: {0} by {1}".format(uid, self.get_user_id()))
