@@ -34,7 +34,7 @@ class ModelSchema(BaseSchema):
 
 
 class DataModelSchema(BaseSchema):
-    uid = UUID(required=True, allow_none=False)
+    uid = UUID()
 
     @pre_dump
     def make_dict(self, obj):
@@ -42,3 +42,4 @@ class DataModelSchema(BaseSchema):
         Serialize to dict object.
         """
         return obj if isinstance(obj, dict) else obj.to_dict()
+

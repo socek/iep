@@ -28,7 +28,7 @@ class PanelsView(BaseConventionView):
         Create new panel for logged in user.
         """
         schema = PanelSchema()
-        panel = self.get_validated_fields(schema, partial=("uid",))
+        panel = self.get_validated_fields(schema)
         panel["convention_uid"] = self._convention_uid
         uid = save_new(**panel)
 
@@ -54,7 +54,7 @@ class PanelView(BaseConventionView):
         Update panel data.
         """
         uid = self.request.matchdict["panel_uid"]
-        update = self.get_validated_fields(PanelSchema(), partial=("uid",))
+        update = self.get_validated_fields(PanelSchema())
         update_by_uid(uid, update)
 
         log.info("Updated Panel: {0} by {1}".format(uid, self.get_user_id()))

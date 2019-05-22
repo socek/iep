@@ -28,7 +28,7 @@ class RoomsView(BaseConventionView):
         Create new room for logged in user.
         """
         schema = RoomSchema()
-        room = self.get_validated_fields(schema, partial=("uid",))
+        room = self.get_validated_fields(schema)
         room["convention_uid"] = self._convention_uid
         uid = save_new(**room)
 
@@ -54,7 +54,7 @@ class RoomView(BaseConventionView):
         Update room data.
         """
         uid = self.request.matchdict["room_uid"]
-        update = self.get_validated_fields(RoomSchema(), partial=("uid",))
+        update = self.get_validated_fields(RoomSchema())
         update_by_uid(uid, update)
 
         log.info("Updated Room: {0} by {1}".format(uid, self.get_user_id()))

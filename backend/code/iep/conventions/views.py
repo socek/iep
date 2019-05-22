@@ -26,7 +26,7 @@ class ConventionsView(AuthenticatedView):
         Create new convention for logged in user.
         """
         schema = ConventionSchema()
-        convention = self.get_validated_fields(schema, partial=("uid",))
+        convention = self.get_validated_fields(schema)
         uid = save_new(**convention)
 
         log.info("Created new Convention: {0} by {1}".format(uid, self.get_user_id()))
@@ -51,7 +51,7 @@ class ConventionView(AuthenticatedView):
         Update convention data.
         """
         uid = self.request.matchdict["convention_uid"]
-        update = self.get_validated_fields(ConventionSchema(), partial=("uid",))
+        update = self.get_validated_fields(ConventionSchema())
         update_by_uid(uid, update)
 
         log.info("Updated Convention: {0} by {1}".format(uid, self.get_user_id()))

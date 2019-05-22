@@ -5,6 +5,7 @@ import store from '@/store'
 
 import NotLoggedIn from '@/auth/not-logged-in'
 import PanelList from '@/panels/list'
+import PanelGrid from '@/panels/grid'
 import RoomList from '@/rooms/list'
 import ConventionList from '@/conventions/list'
 
@@ -58,6 +59,12 @@ let router = new Router({
       path: '/conventions/:convention_uid/rooms',
       name: 'RoomList',
       component: RoomList,
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/conventions/:convention_uid/panelgrid/',
+      name: 'PanelGrid',
+      component: PanelGrid,
       beforeEnter: requireAuth
     }
   ]
