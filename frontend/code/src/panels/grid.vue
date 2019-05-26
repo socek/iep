@@ -4,39 +4,44 @@
       <div class="head">Pokój A</div>
       <div class="head">Pokój B</div>
       <div class="head">Pokój C</div>
-      <div class="timestamp">10:00</div>
-      <div class="timestamp">10:30</div>
-      <div class="timestamp">11:00</div>
-      <div class="timestamp">11:30</div>
-      <div class="timestamp">12:00</div>
-      <div class="timestamp">12:30</div>
+      <div class="timestamp":style="configuration.boxStyle()"  v-for="timestamp in timestamps">{{timestamp}}</div>
 
-      <grid-element v-for="panel in panels" :panel="panel" :style="toGrid(panel)">
+      <grid-element v-for="panel in panels" :panel="panel" :timestamps="timestamps" :configuration="configuration">
       </grid-element>
     </div>
 </template>
 
 <script>
 import gridElement from './grid_element'
+import moment from 'moment'
+
 export default {
   data () {
-    return {
-      panels: [
-        {minutes: 15, start: 1, end: 2, text: 'First Panel', room: 0},
-        {minutes: 45, start: 1, end: 4, text: 'Second Panel', room: 1},
-        {minutes: 45, start: 3, end: 6, text: 'Third Panel', room: 0}
-      ]
-    }
-  },
-  methods: {
-    toGrid (panel) {
-      let columnStart = 2
-      let rowStart = 2
-      return {
-        gridColumnStart: columnStart + panel.room,
-        gridRowStart: rowStart + panel.start,
-        gridRowEnd: rowStart + panel.end
+    let configuration = {
+      interval: 30,
+      minuteHeight: 2,
+      boxStyle: function () {
+        return {height: this.interval * this.minuteHeight + 'px'}
       }
+    }
+
+    let start = moment('2017-02-20 10:00', 'YYYY-MM-DD HH:mm')
+    let end = moment('2017-02-22 14:00', 'YYYY-MM-DD HH:mm')
+    let current = start
+    let timestamps = []
+    while (current <= end) {
+      timestamps.push(current.format('YYYY-MM-DD HH:mm'))
+      current = current.add(configuration.interval, 'm')
+    }
+
+    return {
+      timestamps,
+      configuration,
+      panels: [
+        {minutes: 15, start: '2017-02-20 10:00', text: 'First Panel', room: 0},
+        {minutes: 45, start: '2017-02-20 10:00', text: 'Second Panel', room: 1},
+        {minutes: 45, start: '2017-02-20 12:00', text: 'Third Panel', room: 0}
+      ]
     }
   },
   components: {
@@ -60,7 +65,6 @@ export default {
   }
   .timestamp {
     grid-column-start: 1;
-    padding: 5px 0;
-    height: 60px;
+    padding: auto 0;
   }
 </style>

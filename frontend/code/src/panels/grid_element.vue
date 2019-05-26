@@ -1,12 +1,28 @@
 <template>
-  <div class="panel">{{panel.text}}</div>
+  <div class="panel" :style="toGrid()">{{panel.text}}</div>
 </template>
 
 <script>
 export default {
-  props: ['panel'],
+  props: ['panel', 'timestamps', 'configuration'],
   data () {
     return {
+    }
+  },
+  methods: {
+    toGrid () {
+      let columnStart = 2
+      let rowStart = 2
+      let gridColumnStart = columnStart + this.panel.room
+      let gridRowStart = rowStart + this.timestamps.indexOf(this.panel.start)
+      let gridRowEnd = gridRowStart + Math.ceil(this.panel.minutes / this.configuration.interval)
+      let height = this.panel.minutes * this.configuration.minuteHeight + 'px'
+      return {
+        gridRowStart,
+        gridColumnStart,
+        gridRowEnd,
+        height
+      }
     }
   }
 }
