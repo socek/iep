@@ -4,7 +4,7 @@
       <div class="head">Pokój A</div>
       <div class="head">Pokój B</div>
       <div class="head">Pokój C</div>
-      <div class="timestamp":style="configuration.boxStyle()"  v-for="timestamp in timestamps">{{timestamp}}</div>
+      <div class="timestamp":style="configuration.timestampStyle()"  v-for="timestamp in timestamps">{{timestamp}}</div>
 
       <grid-element v-for="panel in panels" :panel="panel" :timestamps="timestamps" :configuration="configuration">
       </grid-element>
@@ -20,7 +20,7 @@ export default {
     let configuration = {
       interval: 30,
       minuteHeight: 2,
-      boxStyle: function () {
+      timestampStyle: function () {
         return {height: this.interval * this.minuteHeight + 'px'}
       }
     }
@@ -38,7 +38,7 @@ export default {
       timestamps,
       configuration,
       panels: [
-        {minutes: 15, start: '2017-02-20 10:00', text: 'First Panel', room: 0},
+        {minutes: 15, start: '2017-02-20 10:17', text: 'First Panel', room: 0},
         {minutes: 45, start: '2017-02-20 10:00', text: 'Second Panel', room: 1},
         {minutes: 45, start: '2017-02-20 12:00', text: 'Third Panel', room: 0}
       ]

@@ -3,6 +3,11 @@
 </template>
 
 <script>
+import moment from 'moment'
+
+const columnStart = 2
+const rowStart = 2
+
 export default {
   props: ['panel', 'timestamps', 'configuration'],
   data () {
@@ -11,18 +16,47 @@ export default {
   },
   methods: {
     toGrid () {
-      let columnStart = 2
-      let rowStart = 2
       let gridColumnStart = columnStart + this.panel.room
-      let gridRowStart = rowStart + this.timestamps.indexOf(this.panel.start)
-      let gridRowEnd = gridRowStart + Math.ceil(this.panel.minutes / this.configuration.interval)
+      let gridRowStart = this.getGridRowStart()
+      let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / this.configuration.interval)
+      let marginTop = this.getMarginTop(gridRowStart)
       let height = this.panel.minutes * this.configuration.minuteHeight + 'px'
       return {
-        gridRowStart,
         gridColumnStart,
+        gridRowStart,
         gridRowEnd,
+        marginTop,
         height
       }
+    },
+    getGridRowStart () {
+      let index
+      let before = 0
+      let start = moment(this.panel.start, 'YYYY-MM-DD HH:mm')
+      for (let timestamp of this.timestamps) {
+        let date = moment(timestamp, 'YYYY-MM-DD HH:mm')
+        if (date <= start) {
+          before = this.timestamps.indexOf(timestamp)
+        } else {
+          break
+        }
+      }
+      if (!index) {
+        index = before
+      }
+      return rowStart + index
+    },
+    getMarginTop (gridRowStart) {
+      let gridStart = moment(this.timestamps[gridRowStart - rowStart])
+      let panelStart = moment(this.panel.start)
+      let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
+      return minutes * this.configuration.minuteHeight + 'px'
+    },
+    getPanelEndMinutes (gridRowStart) {
+      let gridStart = moment(this.timestamps[gridRowStart - rowStart])
+      let panelStart = moment(this.panel.start)
+      let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
+      return this.panel.minutes + minutes
     }
   }
 }
