@@ -4,23 +4,24 @@
 
 <script>
 import moment from 'moment'
+import core from '@/grid/core'
 
 const columnStart = 2
 const rowStart = 2
 
 export default {
-  props: ['panel', 'timestamps', 'configuration'],
+  props: ['panel'],
   data () {
     return {
     }
   },
   methods: {
     toGrid () {
-      let gridColumnStart = columnStart + this.panel.room
+      let gridColumnStart = this.getColumnStart()
       let gridRowStart = this.getGridRowStart()
-      let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / this.configuration.interval)
+      let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / core.interval)
       let marginTop = this.getMarginTop(gridRowStart)
-      let height = this.panel.minutes * this.configuration.minuteHeight + 'px'
+      let height = this.panel.minutes * core.minuteHeight + 'px'
       return {
         gridColumnStart,
         gridRowStart,
@@ -30,33 +31,32 @@ export default {
       }
     },
     getGridRowStart () {
-      let index
       let before = 0
-      let start = moment(this.panel.start, 'YYYY-MM-DD HH:mm')
-      for (let timestamp of this.timestamps) {
-        let date = moment(timestamp, 'YYYY-MM-DD HH:mm')
+      let start = core.moment(this.panel.start)
+      for (let timestamp of core.timestamps) {
+        let date = core.moment(timestamp)
         if (date <= start) {
-          before = this.timestamps.indexOf(timestamp)
+          before = core.timestamps.indexOf(timestamp)
         } else {
           break
         }
       }
-      if (!index) {
-        index = before
-      }
-      return rowStart + index
+      return rowStart + before
     },
     getMarginTop (gridRowStart) {
-      let gridStart = moment(this.timestamps[gridRowStart - rowStart])
-      let panelStart = moment(this.panel.start)
+      let gridStart = core.moment(core.timestamps[gridRowStart - rowStart])
+      let panelStart = core.moment(this.panel.start)
       let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
-      return minutes * this.configuration.minuteHeight + 'px'
+      return minutes * core.minuteHeight + 'px'
     },
     getPanelEndMinutes (gridRowStart) {
-      let gridStart = moment(this.timestamps[gridRowStart - rowStart])
-      let panelStart = moment(this.panel.start)
+      let gridStart = core.moment(core.timestamps[gridRowStart - rowStart])
+      let panelStart = core.moment(this.panel.start)
       let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
       return this.panel.minutes + minutes
+    },
+    getColumnStart () {
+      return columnStart + core.rooms.indexOf(this.panel.room)
     }
   }
 }

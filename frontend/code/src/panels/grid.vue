@@ -1,51 +1,57 @@
 <template>
-    <div class="area">
+    <div class="area" :style="getStyle()">
       <div class="head">Godziny</div>
-      <div class="head">Pokój A</div>
-      <div class="head">Pokój B</div>
-      <div class="head">Pokój C</div>
-      <div class="timestamp":style="configuration.timestampStyle()"  v-for="timestamp in timestamps">{{timestamp}}</div>
 
-      <grid-element v-for="panel in panels" :panel="panel" :timestamps="timestamps" :configuration="configuration">
-      </grid-element>
+      <room
+        v-for="room in rooms"
+        :room="room">
+      </room>
+      <timestamp
+        v-for="timestamp in timestamps"
+        :timestamp="timestamp">
+      </timestamp>
+      <panel
+        v-for="panel in panels"
+        :panel="panel"
+        :timestamps="timestamps"
+        :rooms="rooms">
+      </panel>
     </div>
 </template>
 
 <script>
-import gridElement from './grid_element'
-import moment from 'moment'
+import panel from '@/grid/panel'
+import timestamp from '@/grid/timestamp'
+import room from '@/grid/room'
+import core from '@/grid/core'
 
 export default {
   data () {
-    let configuration = {
-      interval: 30,
-      minuteHeight: 2,
-      timestampStyle: function () {
-        return {height: this.interval * this.minuteHeight + 'px'}
-      }
-    }
-
-    let start = moment('2017-02-20 10:00', 'YYYY-MM-DD HH:mm')
-    let end = moment('2017-02-22 14:00', 'YYYY-MM-DD HH:mm')
-    let current = start
-    let timestamps = []
-    while (current <= end) {
-      timestamps.push(current.format('YYYY-MM-DD HH:mm'))
-      current = current.add(configuration.interval, 'm')
-    }
+    core.createTimestamps()
+    core.createRooms()
 
     return {
-      timestamps,
-      configuration,
+      timestamps: core.timestamps,
+      rooms: core.rooms,
       panels: [
-        {minutes: 15, start: '2017-02-20 10:17', text: 'First Panel', room: 0},
-        {minutes: 45, start: '2017-02-20 10:00', text: 'Second Panel', room: 1},
-        {minutes: 45, start: '2017-02-20 12:00', text: 'Third Panel', room: 0}
+        {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Pokój A'},
+        {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój C'},
+        {minutes: 60, start: '2017-02-20 12:00', text: 'Trzeci Panel  (start o 12:00, trwa 60 min)', room: 'Pokój C'},
+        {minutes: 60, start: '2017-02-20 13:00', text: 'Czwarty Panel  (start o 13:00, trwa 60 min)', room: 'Pokój C'}
       ]
     }
   },
+  methods: {
+    getStyle () {
+      return {
+        gridTemplateColumns: 'auto '.repeat(this.rooms.length + 1)
+      }
+    }
+  },
   components: {
-    gridElement
+    panel,
+    timestamp,
+    room
   }
 }
 </script>
@@ -53,7 +59,7 @@ export default {
 <style>
   .area {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto;
     background-color: #2196F3;
     grid-gap: 0px;
   }
@@ -62,9 +68,5 @@ export default {
     text-align: center;
     font-size: 15px;
     border: 1px solid black;
-  }
-  .timestamp {
-    grid-column-start: 1;
-    padding: auto 0;
   }
 </style>
