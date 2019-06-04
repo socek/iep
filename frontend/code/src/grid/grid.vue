@@ -1,20 +1,20 @@
 <template>
     <div class="area" :style="getStyle()">
-      <div class="head">Godziny</div>
-
+      <div class="head">↓ Godziny ↓</div>
       <room
         v-for="room in rooms"
+        :key="room.uid"
         :room="room">
       </room>
       <timestamp
-        v-for="timestamp in timestamps"
+        v-for="(timestamp, index) in core.timestamps"
+        :key="index + timestamp"
         :timestamp="timestamp">
       </timestamp>
       <panel
-        v-for="panel in panels"
-        :panel="panel"
-        :timestamps="timestamps"
-        :rooms="rooms">
+        v-for="(panel, index) in panels"
+        :key="index + panel"
+        :panel="panel">
       </panel>
     </div>
 </template>
@@ -27,12 +27,12 @@ import core from '@/grid/core'
 
 export default {
   data () {
-    core.createTimestamps()
-    core.createRooms()
+    core.init(this)
+
+    this.$store.dispatch('grid/init')
 
     return {
-      timestamps: core.timestamps,
-      rooms: core.rooms,
+      core,
       panels: [
         {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Pokój A'},
         {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój C'},
@@ -41,10 +41,18 @@ export default {
       ]
     }
   },
+  created () {
+    this.$store.dispatch('rooms/fetch')
+  },
+  computed: {
+    rooms () {
+      return this.$store.state.rooms.rooms
+    }
+  },
   methods: {
     getStyle () {
       return {
-        gridTemplateColumns: 'auto '.repeat(this.rooms.length + 1)
+        gridTemplateColumns: 'auto '.repeat(core.rooms.length + 1)
       }
     }
   },

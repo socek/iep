@@ -8,9 +8,15 @@ export default {
   end: moment('2017-02-22 14:00', this.timeFormat),
   timestamps: undefined,
   rooms: undefined,
+  component: undefined,
 
   moment: function (date) {
     return moment(date, this.timeFormat)
+  },
+
+  init: function () {
+    this.createTimestamps()
+    this.createRooms()
   },
 
   createTimestamps: function () {

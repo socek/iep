@@ -1,5 +1,5 @@
 <template>
-    <div class="room">{{room}}</div>
+    <div class="room">{{room.name}}</div>
 </template>
 
 <script>

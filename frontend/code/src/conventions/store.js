@@ -30,6 +30,10 @@ export default {
       resource.list().then((response) => {
         state.commit('setConventions', response.data)
       })
+    },
+    activate: ({state, commit}, uid) => {
+      commit('setActive', uid)
+      commit('rooms/clear', {}, {root: true})
     }
   }
 }

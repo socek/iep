@@ -1,5 +1,5 @@
 <template>
-  <div class="panel" :style="toGrid()">{{panel.text}}</div>
+  <div class="panel" :style="style()">{{panel.text}}</div>
 </template>
 
 <script>
@@ -16,7 +16,7 @@ export default {
     }
   },
   methods: {
-    toGrid () {
+    style () {
       let gridColumnStart = this.getColumnStart()
       let gridRowStart = this.getGridRowStart()
       let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / core.interval)

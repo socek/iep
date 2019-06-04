@@ -39,7 +39,7 @@ export default {
         () => roomResource(this).update({room_uid: this.room_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$emit('success')
+          this.$store.dispatch('rooms/fetch', true)
         }
       )
     }
