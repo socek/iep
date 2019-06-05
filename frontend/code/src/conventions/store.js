@@ -34,6 +34,7 @@ export default {
     activate: ({state, commit}, uid) => {
       commit('setActive', uid)
       commit('rooms/clear', {}, {root: true})
+      commit('panels/clear', {}, {root: true})
     }
   }
 }

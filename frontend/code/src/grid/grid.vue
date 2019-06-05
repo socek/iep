@@ -1,4 +1,12 @@
 <template>
+  <div>
+    <div class="panels">
+      <panel
+        v-for="(panel, index) in panels"
+        :key="index + panel"
+        :panel="panel">
+      </panel>
+    </div>
     <div class="area" :style="getStyle()">
       <div class="head">↓ Godziny ↓</div>
       <room
@@ -11,12 +19,8 @@
         :key="index + timestamp"
         :timestamp="timestamp">
       </timestamp>
-      <panel
-        v-for="(panel, index) in panels"
-        :key="index + panel"
-        :panel="panel">
-      </panel>
     </div>
+  </div>
 </template>
 
 <script>
@@ -29,11 +33,9 @@ export default {
   data () {
     core.init(this)
 
-    this.$store.dispatch('grid/init')
-
     return {
       core,
-      panels: [
+      panelTimes: [
         {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Pokój A'},
         {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój C'},
         {minutes: 60, start: '2017-02-20 12:00', text: 'Trzeci Panel  (start o 12:00, trwa 60 min)', room: 'Pokój C'},
@@ -43,16 +45,20 @@ export default {
   },
   created () {
     this.$store.dispatch('rooms/fetch')
+    this.$store.dispatch('panels/fetch')
   },
   computed: {
     rooms () {
       return this.$store.state.rooms.rooms
+    },
+    panels () {
+      return this.$store.state.panels.panels
     }
   },
   methods: {
     getStyle () {
       return {
-        gridTemplateColumns: 'auto '.repeat(core.rooms.length + 1)
+        gridTemplateColumns: 'auto '.repeat(this.rooms.length + 1)
       }
     }
   },
@@ -76,5 +82,9 @@ export default {
     text-align: center;
     font-size: 15px;
     border: 1px solid black;
+  }
+  .panels {
+    float: left;
+    margin-right: 5px;
   }
 </style>

@@ -40,7 +40,7 @@ export default {
         () => panelResource(this).update({panel_uid: this.panel_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$emit('success')
+          this.$store.dispatch('panels/fetch', true)
         }
       )
     }

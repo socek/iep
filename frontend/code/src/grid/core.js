@@ -7,7 +7,6 @@ export default {
   start: moment('2017-02-20 10:00', this.timeFormat),
   end: moment('2017-02-22 14:00', this.timeFormat),
   timestamps: undefined,
-  rooms: undefined,
   component: undefined,
 
   moment: function (date) {
@@ -16,7 +15,6 @@ export default {
 
   init: function () {
     this.createTimestamps()
-    this.createRooms()
   },
 
   createTimestamps: function () {
@@ -27,14 +25,5 @@ export default {
       this.timestamps.push(current.format(this.timeFormat))
       current = current.add(this.interval, 'm')
     }
-  },
-
-  createRooms: function () {
-    this.rooms = [
-      'Pokój A',
-      'Pokój B',
-      'Pokój C',
-      'Pokój D'
-    ]
   }
 }
