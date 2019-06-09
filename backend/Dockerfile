@@ -13,10 +13,6 @@ RUN useradd -U user && mkdir -p $USER_DIR && chown user:user $USER_DIR && chmod 
 WORKDIR $APP_DIR
 RUN chmod 777 $APP_DIR
 
-# Workaround for `python setup.py develop` and using volume /code.
-# It creates symlink wich is outside of the volume /code, so the egg-info data will always be on the docker image.
-RUN mkdir -p /app.egg-info && ln -s ../app.egg-info ${EGG_INFO_NAME}.egg-info && chown user:user /app.egg-info
-
 # Install pipenv. Pipenv is a better then pip tool for managing packages.
 RUN pip install pipenv
 
