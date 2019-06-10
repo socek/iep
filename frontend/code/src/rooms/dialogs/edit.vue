@@ -19,7 +19,6 @@ import form from '@/forms'
 
 export default {
   props: ['room_uid'],
-
   data () {
     return {
       form: form({

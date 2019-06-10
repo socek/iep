@@ -15,6 +15,7 @@ export default {
   data () {
     return {
       val: '',
+      panelUid: '',
       form: form({
         room_uid: {},
         begin_date: '2017-02-20 10:00:00'
@@ -33,12 +34,15 @@ export default {
     }
   },
   methods: {
-    show () {
+    show (panelUid) {
+      this.panelUid = panelUid
       this.$refs.dialog.showModal()
     },
     onSubmit (form) {
+      let data = form.toData()
+      data.panel_uid = this.panelUid
       form.submit(
-        () => gridResource(this).create({}, form.toData()),
+        () => gridResource(this).create({}, data),
         (response) => {
           this.$refs.dialog.hide()
           this.$store.dispatch('conventions/fetchConventions')

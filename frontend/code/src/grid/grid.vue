@@ -22,11 +22,12 @@ import panel from '@/grid/panel'
 import timestamp from '@/grid/timestamp'
 import room from '@/grid/room'
 import core from '@/grid/core'
+import gridResource from '@/grid/resource'
 
 export default {
   data () {
     core.init(this)
-
+    gridResource(this).list().then(() => {})
     return {
       core,
       panelTimes: [

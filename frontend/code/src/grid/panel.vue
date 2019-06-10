@@ -17,9 +17,8 @@ export default {
   },
   methods: {
     sendUpdate () {
-      console.log(this.value)
+      this.$refs.panelTime.show(this.value.value)
       this.value = {}
-      this.$refs.panelTime.show()
     }
   },
   computed: {
