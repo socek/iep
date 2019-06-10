@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div class="panels">
-      <panel
-        v-for="(panel, index) in panels"
-        :key="index + panel"
-        :panel="panel">
-      </panel>
-    </div>
+    <panel :panels="panels"></panel>
     <div class="area" :style="getStyle()">
       <div class="head">↓ Godziny ↓</div>
       <room
@@ -36,8 +30,8 @@ export default {
     return {
       core,
       panelTimes: [
-        {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Pokój A'},
-        {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój C'},
+        {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Jeszcze jeden pokój'},
+        {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój Nauczycielski'},
         {minutes: 60, start: '2017-02-20 12:00', text: 'Trzeci Panel  (start o 12:00, trwa 60 min)', room: 'Pokój C'},
         {minutes: 60, start: '2017-02-20 13:00', text: 'Czwarty Panel  (start o 13:00, trwa 60 min)', room: 'Pokój C'}
       ]
@@ -82,9 +76,5 @@ export default {
     text-align: center;
     font-size: 15px;
     border: 1px solid black;
-  }
-  .panels {
-    float: left;
-    margin-right: 5px;
   }
 </style>

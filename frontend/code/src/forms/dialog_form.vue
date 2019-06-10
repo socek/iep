@@ -1,6 +1,6 @@
 <template>
   <div class="button-wrapper">
-    <b-btn size="sm" :variant="variant" @click="showModal" v-b-tooltip.hover :title="title">
+    <b-btn v-if="showButton" size="sm" :variant="variant" @click="showModal" v-b-tooltip.hover :title="title">
       <slot name="anhor"></slot>
     </b-btn>
 
@@ -32,6 +32,10 @@
       value: {
         type: Object,
         required: true
+      },
+      showButton: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
