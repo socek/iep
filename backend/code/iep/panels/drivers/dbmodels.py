@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -17,3 +18,4 @@ class PanelData(SqlDataModel):
     creator = Column(String)
     room = Column(String)
     accepted = Column(Boolean, default=False)
+    minutes = Column(Integer)
