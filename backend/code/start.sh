@@ -3,7 +3,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 alembic="pipenv run alembic"
-uwsgi="pipenv run uwsgi"
+gunicorn="pipenv run gunicorn"
 
 echo -e "${YELLOW}Running migrations${NC}"
 $alembic upgrade head
@@ -13,9 +13,9 @@ fi
 
 if [ "$AUTORELOAD" == "true" ] ; then
     echo -e "${YELLOW}Starting dev server${NC}"
-    COMMAND="--py-autoreload 1 --honour-stdin"
+    COMMAND="--reload 1 --reload-engine poll"
 else
     echo -e "${YELLOW}Starting production server${NC}"
     COMMAND=""
 fi
-$uwsgi --ini-paste /code/app.ini $COMMAND
+$gunicorn --paste /code/app.ini $COMMAND

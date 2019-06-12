@@ -16,6 +16,7 @@ venusian = "*"
 bcrypt = "*"
 pyjwt = "*"
 pyramid-ipython = "*"
+gunicorn = "*"
 
 [dev-packages]
 ipython = "*"
