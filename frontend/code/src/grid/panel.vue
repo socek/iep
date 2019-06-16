@@ -1,6 +1,6 @@
 <template>
   <div class="panels">
-    <dropdown v-model="value" :options="options" @input="sendUpdate()"></dropdown>
+    <dropdown v-model="value" :options="options" @input="sendUpdate()" label="Dodaj panel do siatki"></dropdown>
     <panel-time ref="panelTime"></panel-time>
   </div>
 </template>

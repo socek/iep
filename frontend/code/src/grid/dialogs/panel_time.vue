@@ -1,7 +1,7 @@
 <template>
-  <dialogform title="Panel" ref="dialog" v-model="form" @submit="onSubmit" :showButton="false">
+  <dialogform title="Dodaj panel do siatki" ref="dialog" v-model="form" @submit="onSubmit" :showButton="false">
     <template slot="content">
-      <dropdown v-model="form.room_uid" :options="rooms"></dropdown>
+      <dropdown v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
       <datetime-input v-model="form.begin_date" label="Początek"></datetime-input>
     </template>
   </dialogform>
