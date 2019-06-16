@@ -1,37 +1,36 @@
-import moment from 'moment'
-import roomResource from '@/rooms/resource'
-import panelResource from '@/panels/resource'
+import {moment, interval, timeFormat} from '@/grid/utils'
+import gridResource from '@/grid/resource'
 
 export default {
   namespaced: true,
   state: {
-    interval: 30,
-    minuteHeight: 2,
-    timeFormat: 'YYYY-MM-DD HH:mm',
-    start: null,
-    end: null,
-    timestamps: undefined,
-    rooms: undefined
+    timestamps: undefined
   },
   getters: {
-    moment: (state, getters, root) => (date) => {
-      return moment(date, state.timeFormat)
-    }
   },
   mutations: {
-    // init: (state, getters, root) => {
+    createTimestamps: function (state, {startDate, endDate}) {
+      state.timestamps = []
+      endDate = moment(endDate)
+      let current = moment(startDate)
 
-    // }
+      while (current <= endDate) {
+        state.timestamps.push(current.format(timeFormat))
+        current = current.add(interval, 'm')
+      }
+    }
   },
   actions: {
     init: (store) => {
-      let vue = store.rootGetters.vue
-      roomResource(vue).list().then((response) => {
-        console.log(response)
-        console.log('rooms', response.data)
-      })
-      panelResource(vue).list().then((response) => {
-        console.log('panels', response.data)
+      let resource = gridResource(store.rootGetters.vue)
+      let startDate = store.rootGetters['conventions/startDate']
+      let endDate = store.rootGetters['conventions/endDate']
+      if (!(startDate && endDate)) {
+        return
+      }
+
+      resource.list().then((result) => {
+        store.commit('createTimestamps', {startDate, endDate})
       })
     }
   }

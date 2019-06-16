@@ -10,6 +10,18 @@ export default {
   getters: {
     isActive (state) {
       return state.dict[state.active]
+    },
+    startDate (state) {
+      let current = state.dict[state.active]
+      if (current) {
+        return current.start_date
+      }
+    },
+    endDate (state) {
+      let current = state.dict[state.active]
+      if (current) {
+        return current.end_date
+      }
     }
   },
   mutations: {

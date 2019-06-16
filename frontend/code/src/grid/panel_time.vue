@@ -3,8 +3,7 @@
 </template>
 
 <script>
-import moment from 'moment'
-import core from '@/grid/core'
+import {moment, interval, minuteHeight} from '@/grid/utils'
 
 const columnStart = 2
 const rowStart = 2
@@ -19,9 +18,9 @@ export default {
     style () {
       let gridColumnStart = this.getColumnStart()
       let gridRowStart = this.getGridRowStart()
-      let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / core.interval)
+      let gridRowEnd = gridRowStart + Math.ceil(this.getPanelEndMinutes(gridRowStart) / interval)
       let marginTop = this.getMarginTop(gridRowStart)
-      let height = this.panel.minutes * core.minuteHeight + 'px'
+      let height = this.panel.minutes * minuteHeight + 'px'
       return {
         gridColumnStart,
         gridRowStart,
@@ -31,10 +30,11 @@ export default {
       }
     },
     getGridRowStart () {
+      return
       let before = 0
-      let start = core.moment(this.panel.start)
+      let start = moment(this.panel.start)
       for (let timestamp of core.timestamps) {
-        let date = core.moment(timestamp)
+        let date = moment(timestamp)
         if (date <= start) {
           before = core.timestamps.indexOf(timestamp)
         } else {
@@ -44,14 +44,14 @@ export default {
       return rowStart + before
     },
     getMarginTop (gridRowStart) {
-      let gridStart = core.moment(core.timestamps[gridRowStart - rowStart])
-      let panelStart = core.moment(this.panel.start)
+      let gridStart = moment(core.timestamps[gridRowStart - rowStart])
+      let panelStart = moment(this.panel.start)
       let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
-      return minutes * core.minuteHeight + 'px'
+      return minutes * minuteHeight + 'px'
     },
     getPanelEndMinutes (gridRowStart) {
-      let gridStart = core.moment(core.timestamps[gridRowStart - rowStart])
-      let panelStart = core.moment(this.panel.start)
+      let gridStart = moment(core.timestamps[gridRowStart - rowStart])
+      let panelStart = moment(this.panel.start)
       let minutes = moment.duration(panelStart.diff(gridStart)).asMinutes()
       return this.panel.minutes + minutes
     },

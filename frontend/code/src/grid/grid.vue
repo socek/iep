@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isConventActive">
     <panel :panels="panels"></panel>
     <div class="area" :style="getStyle()">
       <div class="head">↓ Godziny ↓</div>
@@ -9,7 +9,7 @@
         :room="room">
       </room>
       <timestamp
-        v-for="(timestamp, index) in core.timestamps"
+        v-for="(timestamp, index) in timestamps"
         :key="index + timestamp"
         :timestamp="timestamp">
       </timestamp>
@@ -21,24 +21,13 @@
 import panel from '@/grid/panel'
 import timestamp from '@/grid/timestamp'
 import room from '@/grid/room'
-import core from '@/grid/core'
-import gridResource from '@/grid/resource'
 
 export default {
   data () {
-    core.init(this)
-    gridResource(this).list().then(() => {})
     return {
-      core,
-      panelTimes: [
-        {minutes: 15, start: '2017-02-20 10:21', text: 'Pierwszy Panel (start o 10:21, trwa 15 min)', room: 'Jeszcze jeden pokój'},
-        {minutes: 45, start: '2017-02-20 10:00', text: 'Drugi Panel (start o 10:00, trwa 45 min)', room: 'Pokój Nauczycielski'},
-        {minutes: 60, start: '2017-02-20 12:00', text: 'Trzeci Panel  (start o 12:00, trwa 60 min)', room: 'Pokój C'},
-        {minutes: 60, start: '2017-02-20 13:00', text: 'Czwarty Panel  (start o 13:00, trwa 60 min)', room: 'Pokój C'}
-      ]
     }
   },
-  created () {
+  mounted () {
     this.$store.dispatch('rooms/fetch')
     this.$store.dispatch('panels/fetch')
   },
@@ -48,6 +37,16 @@ export default {
     },
     panels () {
       return this.$store.state.panels.panels
+    },
+    timestamps () {
+      return this.$store.state.grid.timestamps
+    },
+    isConventActive () {
+      let isActive = this.$store.getters['conventions/isActive']
+      if (isActive) {
+        this.$store.dispatch('grid/init')
+      }
+      return isActive
     }
   },
   methods: {

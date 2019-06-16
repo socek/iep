@@ -61,7 +61,7 @@
         return this.$store.getters['auth/isAuthenticated'] && this.$store.state.conventions.active !== null
       }
     },
-    created () {
+    beforeCreate () {
       this.$store.commit('init', this)
       this.$store.dispatch('conventions/fetchConventions')
     },
