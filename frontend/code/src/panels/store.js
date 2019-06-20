@@ -8,6 +8,9 @@ export default {
     fetched: false
   },
   getters: {
+    getPanels (state) {
+      return state.panels
+    }
   },
   mutations: {
     set (state, panels) {

@@ -8,6 +8,9 @@ export default {
     fetched: false
   },
   getters: {
+    getRooms (state) {
+      return state.rooms
+    }
   },
   mutations: {
     set (state, rooms) {

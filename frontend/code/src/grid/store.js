@@ -8,6 +8,9 @@ export default {
     panelTimes: null
   },
   getters: {
+    getTimestamps (state) {
+      return state.timestamps
+    }
   },
   mutations: {
     createTimestamps: function (state, {startDate, endDate}) {

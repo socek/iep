@@ -15,7 +15,7 @@
       </timestamp>
       <panel-time
         v-for="(panelTime, index) in panelTimes"
-        :key="panelTime.uid"
+        :key="panelTime.uid + componentKey"
         :panelTime="panelTime"
       ></panel-time>
     </div>
@@ -31,6 +31,7 @@ import panelTime from '@/grid/panel_time'
 export default {
   data () {
     return {
+      componentKey: 0
     }
   },
   mounted () {
@@ -70,6 +71,16 @@ export default {
     timestamp,
     room,
     panelTime
+  },
+  beforeCreate () {
+    this.unsubscribe = this.$store.subscribe((action, state) => {
+      if (['rooms/set', 'panels/set'].includes(action.type)) {
+        this.componentKey += 1
+      }
+    })
+  },
+  beforeDestroy () {
+    this.unsubscribe()
   }
 }
 </script>
