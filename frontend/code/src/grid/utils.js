@@ -8,4 +8,8 @@ function moment (date) {
   return oryginalMoment(date, timeFormat)
 }
 
-export {moment, timeFormat, interval, minuteHeight}
+function showDate (date) {
+  return moment(date).format(timeFormat)
+}
+
+export {moment, timeFormat, interval, minuteHeight, showDate}

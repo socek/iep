@@ -13,6 +13,11 @@
         :key="index + timestamp"
         :timestamp="timestamp">
       </timestamp>
+      <panel-time
+        v-for="(panelTime, index) in panelTimes"
+        :key="panelTime.uid"
+        :panelTime="panelTime"
+      ></panel-time>
     </div>
   </div>
 </template>
@@ -21,6 +26,7 @@
 import panel from '@/grid/panel'
 import timestamp from '@/grid/timestamp'
 import room from '@/grid/room'
+import panelTime from '@/grid/panel_time'
 
 export default {
   data () {
@@ -41,6 +47,9 @@ export default {
     timestamps () {
       return this.$store.state.grid.timestamps
     },
+    panelTimes () {
+      return this.$store.state.grid.panelTimes // [this.$store.state.grid.panelTimes[0], this.$store.state.grid.panelTimes[3]]
+    },
     isConventActive () {
       let isActive = this.$store.getters['conventions/isActive']
       if (isActive) {
@@ -59,7 +68,8 @@ export default {
   components: {
     panel,
     timestamp,
-    room
+    room,
+    panelTime
   }
 }
 </script>

@@ -15,3 +15,4 @@ class PanelTimeData(SqlDataModel):
 
     begin_date = Column(DateTime)
     end_date = Column(DateTime)
+

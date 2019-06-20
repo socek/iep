@@ -28,7 +28,6 @@ class ListActive(object):
         for panel_time, panel in self._list_active(convention_uid):
             data = panel_time.to_dict()
             data['panel'] = panel.to_dict()
-            print(data)
             yield data
 
 
