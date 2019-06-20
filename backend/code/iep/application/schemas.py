@@ -19,7 +19,7 @@ class ModelSchema(BaseSchema):
     uid = UUID(required=True, allow_none=False)
 
     @pre_dump
-    def make_dict(self, obj):
+    def make_dict(self, obj, *args, **kwargs):
         """
         Serialize to dict object.
         """
@@ -37,7 +37,7 @@ class DataModelSchema(BaseSchema):
     uid = UUID()
 
     @pre_dump
-    def make_dict(self, obj):
+    def make_dict(self, obj, *args, **kwargs):
         """
         Serialize to dict object.
         """

@@ -49,7 +49,7 @@ export default {
       return this.$store.state.grid.timestamps
     },
     panelTimes () {
-      return this.$store.state.grid.panelTimes // [this.$store.state.grid.panelTimes[0], this.$store.state.grid.panelTimes[3]]
+      return this.$store.state.grid.panelTimes
     },
     isConventActive () {
       let isActive = this.$store.getters['conventions/isActive']

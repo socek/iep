@@ -1,5 +1,5 @@
-from logging import getLogger
 from datetime import timedelta
+from logging import getLogger
 
 from pyramid.httpexceptions import HTTPNotFound
 
@@ -7,7 +7,9 @@ from iep.application.cache import cache_per_request
 from iep.application.drivers.query import NoResultFound
 from iep.conventions.view_mixins import BaseConventionView
 from iep.panels.drivers.query import get_active_by_uid as get_panel
-from iep.panels.planning.drivers.command import save_new
+
+# from iep.panels.planning.drivers.command import GetActive
+from iep.panels.planning.drivers.command import upsert
 from iep.panels.planning.drivers.command import update_by_uid
 from iep.panels.planning.drivers.query import get_active_by_uid
 from iep.panels.planning.drivers.query import list_active_by_convention
@@ -34,14 +36,23 @@ class PanelTimesView(BaseConventionView):
         panel_time["convention_uid"] = self._convention_uid
 
         panel = get_panel(panel_time["panel_uid"])
-        panel_time["end_date"] = panel_time["begin_date"] + timedelta(minutes=panel["minutes"])
+        panel_time["end_date"] = panel_time["begin_date"] + timedelta(
+            minutes=panel["minutes"]
+        )
 
-        uid = save_new(**panel_time)
+        upsert(**panel_time)
 
-        log.info("Created new Panel: {0} by {1}".format(uid, self.get_user_id()))
-        log.debug("{}:{}".format(uid, panel_time))
+        log.info(
+            "Upserted new PanelTime: Convent:{0} Panel:{1} Room:{2} by user:{3}".format(
+                self._convention_uid,
+                panel_time["panel_uid"],
+                panel_time["room_uid"],
+                self.get_user_id(),
+            )
+        )
+        log.debug("{}".format(panel_time))
 
-        return {"is_success": True, "uid": uid}
+        return {"is_success": True}
 
 
 class PanelTimeView(BaseConventionView):

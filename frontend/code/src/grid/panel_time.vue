@@ -1,10 +1,15 @@
 <template>
-  <div class="panel" :style="style" :key="componentKey">{{panelTime.panel.name}}</div>
+  <div class="panel" :style="style" :key="componentKey">
+    {{panelTime.panel.name}}
+    <b-btn size="sm" variant="outline-warning" @click="editHandler"><icon name="tools" /></b-btn>
+    <delete-dialog :panelTime="panelTime" />
+  </div>
 </template>
 
 <script>
 import {moment, interval, minuteHeight} from '@/grid/utils'
 import {duration} from 'moment'
+import deleteDialog from '@/grid/dialogs/delete'
 
 const columnStart = 2
 const rowStart = 2
@@ -19,7 +24,14 @@ export default {
       timestamps: this.$store.getters['grid/getTimestamps']
     }
   },
-
+  methods: {
+    editHandler () {
+      console.log('edit')
+    },
+    deleteHandler () {
+      console.log('delete')
+    }
+  },
   computed: {
     style () {
       let getGridRowStart = (beginDate) => {
@@ -42,15 +54,12 @@ export default {
       }
 
       let getColumnStart = () => {
-        console.log('rooms length', this.rooms.length)
         for (let index = 0; index < this.rooms.length; index++) {
           let roomUid = this.rooms[index].uid
           if (roomUid === this.panelTime.room_uid) {
-            console.log('room', columnStart, index)
             return columnStart + index
           }
         }
-        console.log('zero')
         return 0
       }
 
@@ -84,6 +93,9 @@ export default {
       }
       return result
     }
+  },
+  components: {
+    deleteDialog
   }
 }
 </script>

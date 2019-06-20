@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import gridResource from '@/grid/resource'
 import form from '@/forms'
 
@@ -18,7 +19,7 @@ export default {
       panelUid: '',
       form: form({
         room_uid: {},
-        begin_date: this.$store.getters['conventions/isActive'].start_date
+        begin_date: moment(this.$store.getters['conventions/isActive'].start_date).format('YYYY-MM-DD HH:mm:ss')
       })
     }
   },

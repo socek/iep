@@ -2,7 +2,7 @@
   <b-btn size="sm" :variant="variant" @click="showModal">
     <slot name="anhor"></slot>
 
-    <b-modal ref="baseModal" :title="title" hide-footer>
+    <b-modal ref="baseModal" :title="title" :hide-footer="false" @ok="$emit('ok')">
       <slot name="content"></slot>
     </b-modal>
   </b-btn>
@@ -15,6 +15,9 @@
       variant: {
         type: String,
         default: 'primary'
+      },
+      hideFooter: {
+        default: false
       }
     },
     methods: {
