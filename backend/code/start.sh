@@ -18,4 +18,4 @@ else
     echo -e "${YELLOW}Starting production server${NC}"
     COMMAND=""
 fi
-$gunicorn --paste /code/app.ini $COMMAND
+$gunicorn --paste /code/app.ini $COMMAND --log-level debug
