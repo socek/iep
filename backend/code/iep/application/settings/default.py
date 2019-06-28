@@ -1,5 +1,5 @@
-from sapp.plugins.settings import PrefixedStringsDict
 from decouple import config
+from sapp.plugins.settings import PrefixedStringsDict
 
 
 def default():
@@ -41,6 +41,11 @@ def logging(settings):
             },
             "iep": {"level": "DEBUG", "handlers": ["console"], "qualname": "iep"},
             "celery": {"handlers": ["console"], "level": "ERROR"},
+            "gunicorn.errors": {
+                "level": "DEBUG",
+                "handlers": ["console"],
+                "propagate": True,
+            },
         },
     }
 

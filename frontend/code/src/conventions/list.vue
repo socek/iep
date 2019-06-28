@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     activate (uid) {
-      this.$store.commit('conventions/setActive', uid)
+      this.$store.dispatch('conventions/activate', uid)
     }
   },
   computed: {

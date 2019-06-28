@@ -10,6 +10,18 @@ export default {
   getters: {
     isActive (state) {
       return state.dict[state.active]
+    },
+    startDate (state) {
+      let current = state.dict[state.active]
+      if (current) {
+        return current.start_date
+      }
+    },
+    endDate (state) {
+      let current = state.dict[state.active]
+      if (current) {
+        return current.end_date
+      }
     }
   },
   mutations: {
@@ -30,6 +42,11 @@ export default {
       resource.list().then((response) => {
         state.commit('setConventions', response.data)
       })
+    },
+    activate: ({state, commit}, uid) => {
+      commit('setActive', uid)
+      commit('rooms/clear', {}, {root: true})
+      commit('panels/clear', {}, {root: true})
     }
   }
 }

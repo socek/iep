@@ -5,7 +5,7 @@ import store from '@/store'
 
 import NotLoggedIn from '@/auth/not-logged-in'
 import PanelList from '@/panels/list'
-import PanelGrid from '@/panels/grid'
+import PanelGrid from '@/grid/grid'
 import RoomList from '@/rooms/list'
 import ConventionList from '@/conventions/list'
 

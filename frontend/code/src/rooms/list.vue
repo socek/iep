@@ -3,12 +3,12 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1 class="h2"><icon name="shoe-prints" /> Pokoje</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
-          <new-dialog @success="fetchData"></new-dialog>
+          <new-dialog></new-dialog>
       </div>
     </div>
     <b-table ref="table" :busy.sync="isBusy" show-empty striped bordered hover :items="provider" :fields="fields">
       <template slot="actions" slot-scope="data">
-        <edit-dialog :room_uid="data.item.uid" @success="fetchData"></edit-dialog>
+        <edit-dialog :room_uid="data.item.uid"></edit-dialog>
       </template>
       <template slot="empty">
         Brak elementów do wyświetlenia.
@@ -35,14 +35,12 @@ export default {
       resource: roomResource(this)
     }
   },
-  methods: {
-    provider (ctx) {
-      return this.resource.list().then((response) => {
-        return response.data
-      })
-    },
-    fetchData () {
-      this.$refs.table.refresh()
+  created () {
+    this.$store.dispatch('rooms/fetch')
+  },
+  computed: {
+    provider () {
+      return this.$store.state.rooms.rooms
     }
   },
   components: {

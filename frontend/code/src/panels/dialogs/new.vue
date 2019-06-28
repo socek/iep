@@ -9,6 +9,7 @@
       <text-input v-model="form.name" label="Tytuł" placeholder="Tytuł"></text-input>
       <text-input v-model="form.description" label="Opis" placeholder="Opis widoczny w programie konwentu"></text-input>
       <text-input v-model="form.additional" label="Dodatkowy opis" placeholder="Dodatkowy opis widoczny tylko dla obsługi"></text-input>
+      <text-input v-model="form.minutes" label="Czas trwania" placeholder="W minutach"></text-input>
     </template>
   </dialogform>
 </template>
@@ -23,7 +24,8 @@ export default {
       form: form({
         name: '',
         description: '',
-        additional: ''
+        additional: '',
+        minutes: ''
       })
     }
   },
@@ -33,7 +35,7 @@ export default {
         () => panelResource(this).create({}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$emit('success')
+          this.$store.dispatch('panels/fetch', true)
         }
       )
     }

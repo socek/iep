@@ -12,10 +12,13 @@ RUN apt-get update && apt-get install -y google-chrome-stable
 RUN curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
 
 ADD code/package.json .
+ADD code/.yarnrc .
 RUN yarn install
 RUN yarn add @babel/runtime
+
+FROM builder as dev
 COPY code /code
-CMD npm run dev
+CMD yarn run dev
 
 FROM builder AS frontend
 
