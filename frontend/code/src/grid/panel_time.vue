@@ -29,9 +29,6 @@ export default {
   methods: {
     editHandler (panelTime) {
       this.$refs.panelTime.show(panelTime.panel_uid)
-    },
-    deleteHandler () {
-      console.log('delete')
     }
   },
   computed: {
