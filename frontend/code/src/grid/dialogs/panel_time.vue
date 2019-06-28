@@ -1,6 +1,7 @@
 <template>
   <dialogform title="Dodaj panel do siatki" ref="dialog" v-model="form" @submit="onSubmit" :showButton="false">
     <template slot="content">
+      <p>Panel: <strong>{{panelName}}</strong></p>
       <dropdown v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
       <datetime-input v-model="form.begin_date" label="Początek"></datetime-input>
     </template>
@@ -17,6 +18,7 @@ export default {
     return {
       val: '',
       panelUid: '',
+      panelName: '',
       form: form({
         room_uid: {},
         begin_date: moment(this.$store.getters['conventions/isActive'].start_date).format('YYYY-MM-DD HH:mm:ss')
@@ -37,6 +39,7 @@ export default {
   methods: {
     show (panelUid) {
       this.panelUid = panelUid
+      this.panelName = this.$store.getters['panels/getPanel'](panelUid).name
       this.$refs.dialog.showModal()
     },
     onSubmit (form) {

@@ -10,6 +10,11 @@ export default {
   getters: {
     getPanels (state) {
       return state.panels
+    },
+    getPanel (state) {
+      return (uid) => {
+        return state.dict[uid]
+      }
     }
   },
   mutations: {
