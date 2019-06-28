@@ -21,6 +21,7 @@ export default {
         panel_uid: this.panelTime.panel_uid,
         room_uid: this.panelTime.room_uid
       })
+      this.$store.dispatch('conventions/fetchConventions')
     }
   },
   components: {
