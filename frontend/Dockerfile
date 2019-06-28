@@ -20,7 +20,7 @@ FROM builder as dev
 COPY code /code
 CMD yarn run dev
 
-FROM builder AS frontend
+FROM dev AS frontend
 
 RUN yarn build --force
 
