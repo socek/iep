@@ -18,14 +18,13 @@ class Delete(object):
     """
 
     @Decorator(app, "dbsession")
-    def _delete(self, convention_uid, panel_uid, room_uid, dbsession):
+    def _delete(self, convention_uid, panel_uid, dbsession):
         [panel_time_uid] = (
             dbsession.query(PanelTimeData.uid)
             .filter(
                 PanelData.is_active.is_(True),
                 PanelData.convention_uid == convention_uid,
                 PanelTimeData.panel_uid == panel_uid,
-                PanelTimeData.room_uid == room_uid,
             )
             .join(PanelData)
             .one()
@@ -37,8 +36,8 @@ class Delete(object):
         )
         dbsession.commit()
 
-    def __call__(self, convention_uid, panel_uid, room_uid):
-        self._delete(convention_uid, panel_uid, room_uid)
+    def __call__(self, convention_uid, panel_uid):
+        self._delete(convention_uid, panel_uid)
 
 
 class Upsert(object):

@@ -33,25 +33,24 @@ class ListActive(object):
 
 class GetActive(object):
     """
-    Get active row using uniq group attributes: convention_uid, panel_uid, room_uid
+    Get active row using uniq group attributes: convention_uid, panel_uid
     """
     @Decorator(app, "dbsession")
-    def _get_active(self, convention_uid, panel_uid, room_uid, dbsession):
+    def _get_active(self, convention_uid, panel_uid, dbsession):
         return (
             dbsession.query(PanelTimeData, PanelData)
             .filter(
                 PanelData.is_active.is_(True),
                 PanelData.convention_uid == convention_uid,
                 PanelTimeData.panel_uid == panel_uid,
-                PanelTimeData.room_uid == room_uid,
             )
             .order_by(PanelData.created_at.desc())
             .join(PanelData)
             .one()
         )
 
-    def __call__(self, convention_uid, panel_uid, room_uid):
-        panel_time, panel = self._get_active(convention_uid, panel_uid, room_uid)
+    def __call__(self, convention_uid, panel_uid):
+        panel_time, panel = self._get_active(convention_uid, panel_uid)
         data = panel_time.to_dict()
         data["panel"] = panel.to_dict()
         return data

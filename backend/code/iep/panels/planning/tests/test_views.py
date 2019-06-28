@@ -23,8 +23,13 @@ class TestPanelTimesView(ViewFixture):
             yield mock
 
     @fixture
-    def msave(self):
-        with patch("iep.panels.planning.views.save_new") as mock:
+    def mupsert(self):
+        with patch("iep.panels.planning.views.upsert") as mock:
+            yield mock
+
+    @fixture
+    def mget_panel(self):
+        with patch("iep.panels.planning.views.get_panel") as mock:
             yield mock
 
     def test_get(self, view, mlist_active_by_convention, mrequest):
@@ -32,9 +37,11 @@ class TestPanelTimesView(ViewFixture):
         GET should return serialized list of all active panels.
         """
         assert view.get() == []
-        mlist_active_by_convention.assert_called_once_with(mrequest.matchdict["convention_id"])
+        mlist_active_by_convention.assert_called_once_with(
+            mrequest.matchdict["convention_id"]
+        )
 
-    def test_put(self, view, msave, mrequest):
+    def test_put(self, view, mupsert, mget_panel, mrequest):
         """
         PUT should create and save new model.
         """
@@ -46,7 +53,9 @@ class TestPanelTimesView(ViewFixture):
             "end_date": datetime.now().isoformat(),
         }
 
-        assert view.put() == {"is_success": True, "uid": msave.return_value}
+        mget_panel.return_value = {"minutes": 15}
+
+        assert view.put() == {"is_success": True}
 
 
 class TestPanelTimeView(ViewFixture):
@@ -111,15 +120,9 @@ class TestPanelTimeView(ViewFixture):
         .get should return serialized panel
         """
         uid = uuid4()
-        mget_panel_time.return_value = {
-            "uid": uid,
-            "convention_uid": uid,
-        }
+        mget_panel_time.return_value = {"uid": uid, "convention_uid": uid}
 
-        assert view.get() == {
-            "uid": uid.hex,
-            "convention_uid": uid.hex,
-        }
+        assert view.get() == {"uid": uid.hex, "convention_uid": uid.hex}
 
     def test_patch(self, view, mrequest, mupdate_by_uid):
         """

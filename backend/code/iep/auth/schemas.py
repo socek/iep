@@ -17,7 +17,7 @@ class SignUpSchema(Schema):
     confirmPassword = String(required=True, allow_none=False)
 
     @post_load
-    def validate_passwords(self, data):
+    def validate_passwords(self, data, *args, **kwargs):
         if data["confirmPassword"] != data["password"]:
             raise ValidationError("Password do not match!")
         return data
