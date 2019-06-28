@@ -5,10 +5,11 @@
     v-model="form"
     @submit="onSubmit"
     :showButton="false"
-    :fetchContent="fetchContent">
+    :fetchContent="fetchContent"
+    @afterFetchContent="afterFetchContentHandler">
     <template slot="content">
       <p>Panel: <strong>{{panelName}}</strong></p>
-      <dropdown v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
+      <dropdown ref="room" v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
       <datetime-input v-model="form.begin_date" label="Początek"></datetime-input>
     </template>
   </dialogform>
@@ -60,6 +61,9 @@ export default {
           }
         }
       })
+    },
+    afterFetchContentHandler () {
+      this.$refs.room.setValue(this.form.room_uid.value)
     },
     onSubmit (form) {
       let data = form.toData()

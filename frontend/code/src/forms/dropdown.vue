@@ -7,7 +7,7 @@
       label="text"
       v-model="selected"
       :options="options"
-      @input="onInputSelect">
+      @input="inputHandler">
     </v-select>
     <div class="invalid-feedback" style="display: block;" v-for="message in value.errors">{{ message }}</div>
   </div>
@@ -33,6 +33,10 @@
       this.selected = this.getOptionByValue(this.value.value)
     },
     methods: {
+      setValue (value) {
+        value = value || this.value.value
+        this.selected = this.getOptionByValue(value)
+      },
       getOptionByValue (value) {
         for (let option of this.options) {
           if (option.value === value) {
@@ -40,7 +44,7 @@
           }
         }
       },
-      onInputSelect (element) {
+      inputHandler (element) {
         let value = this.value
         value.value = element ? element.value : null
         this.$emit('input', value)
