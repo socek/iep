@@ -17,7 +17,6 @@ export default {
   props: ['panelTime'],
   methods: {
     okHandler () {
-      console.log(this.panelTime)
       gridResource(this).delete({
         panel_uid: this.panelTime.panel_uid,
         room_uid: this.panelTime.room_uid

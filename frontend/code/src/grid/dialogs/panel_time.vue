@@ -53,11 +53,10 @@ export default {
     },
     fetchContent () {
       return gridResource(this).get({panel_uid: this.panelUid}).then((response) => {
-        console.log(response)
         return {
           body: {
             room_uid: response.body.room_uid,
-            begin_date: moment(response.body.begin_date).format('YYYY-MM-DD HH:mm:ss')
+            begin_date: response.body.begin_date
           }
         }
       })

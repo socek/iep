@@ -15,6 +15,8 @@ ADD code/package.json .
 ADD code/.yarnrc .
 RUN yarn install
 RUN yarn add @babel/runtime
+
+FROM builder as dev
 COPY code /code
 CMD yarn run dev
 
