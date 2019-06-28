@@ -1,5 +1,11 @@
 <template>
-  <dialogform title="Dodaj panel do siatki" ref="dialog" v-model="form" @submit="onSubmit" :showButton="false">
+  <dialogform
+    title="Dodaj panel do siatki"
+    ref="dialog"
+    v-model="form"
+    @submit="onSubmit"
+    :showButton="false"
+    :fetchContent="fetchContent">
     <template slot="content">
       <p>Panel: <strong>{{panelName}}</strong></p>
       <dropdown v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
@@ -40,7 +46,21 @@ export default {
     show (panelUid) {
       this.panelUid = panelUid
       this.panelName = this.$store.getters['panels/getPanel'](panelUid).name
+      this.val = ''
+      this.form.room_uid.value = ''
+      this.form.begin_date.value = ''
       this.$refs.dialog.showModal()
+    },
+    fetchContent () {
+      return gridResource(this).get({panel_uid: this.panelUid}).then((response) => {
+        console.log(response)
+        return {
+          body: {
+            room_uid: response.body.room_uid,
+            begin_date: moment(response.body.begin_date).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+      })
     },
     onSubmit (form) {
       let data = form.toData()

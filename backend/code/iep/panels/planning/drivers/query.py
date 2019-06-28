@@ -1,9 +1,12 @@
 from sapp import Decorator
+from sqlalchemy.exc import DataError
+from sqlalchemy.orm.exc import NoResultFound as SANoResultFound
 
 from .dbmodels import PanelTimeData
 from iep import app
 from iep.application.drivers.query import GetActiveByUidForModel
 from iep.application.drivers.query import ListActiveForModel
+from iep.application.drivers.query import NoResultFound
 from iep.panels.drivers.dbmodels import PanelData
 
 
@@ -50,10 +53,13 @@ class GetActive(object):
         )
 
     def __call__(self, convention_uid, panel_uid):
-        panel_time, panel = self._get_active(convention_uid, panel_uid)
-        data = panel_time.to_dict()
-        data["panel"] = panel.to_dict()
-        return data
+        try:
+            panel_time, panel = self._get_active(convention_uid, panel_uid)
+            data = panel_time.to_dict()
+            data["panel"] = panel.to_dict()
+            return data
+        except (SANoResultFound, DataError):
+            raise NoResultFound
 
 
 list_active = ListActiveForModel(PanelTimeData)

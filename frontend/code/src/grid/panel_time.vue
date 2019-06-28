@@ -1,8 +1,9 @@
 <template>
   <div class="panel" :style="style" :key="componentKey">
     {{panelTime.panel.name}}
-    <b-btn size="sm" variant="outline-warning" @click="editHandler"><icon name="tools" /></b-btn>
+    <b-btn size="sm" variant="outline-warning" @click="editHandler(panelTime)"><icon name="tools" /></b-btn>
     <delete-dialog :panelTime="panelTime" />
+    <panel-time ref="panelTime"></panel-time>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import {moment, interval, minuteHeight} from '@/grid/utils'
 import {duration} from 'moment'
 import deleteDialog from '@/grid/dialogs/delete'
+import panelTime from '@/grid/dialogs/panel_time'
 
 const columnStart = 2
 const rowStart = 2
@@ -25,8 +27,8 @@ export default {
     }
   },
   methods: {
-    editHandler () {
-      console.log('edit')
+    editHandler (panelTime) {
+      this.$refs.panelTime.show(panelTime.panel_uid)
     },
     deleteHandler () {
       console.log('delete')
@@ -95,7 +97,8 @@ export default {
     }
   },
   components: {
-    deleteDialog
+    deleteDialog,
+    panelTime
   }
 }
 </script>

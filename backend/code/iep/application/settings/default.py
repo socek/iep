@@ -1,5 +1,5 @@
-from sapp.plugins.settings import PrefixedStringsDict
 from decouple import config
+from sapp.plugins.settings import PrefixedStringsDict
 
 
 def default():

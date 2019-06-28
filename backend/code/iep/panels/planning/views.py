@@ -10,7 +10,7 @@ from iep.panels.drivers.query import get_active_by_uid as get_panel
 
 from iep.panels.planning.drivers.command import upsert
 from iep.panels.planning.drivers.command import update_by_uid
-from iep.panels.planning.drivers.query import get_active_by_uid
+from iep.panels.planning.drivers.query import get_active
 from iep.panels.planning.drivers.query import list_active_by_convention
 from iep.panels.planning.schemas import PanelTimeSchema
 
@@ -79,6 +79,15 @@ class PanelTimeView(BaseConventionView):
     @cache_per_request("panel")
     def _get_panel_time(self):
         try:
-            return get_active_by_uid(self.request.matchdict["panel_time_uid"])
+            convention_uid = self.request.matchdict["convention_uid"]
+            panel_uid = self.request.matchdict["panel_uid"]
+            return get_active(convention_uid, panel_uid)
         except NoResultFound:
-            raise HTTPNotFound()
+            return {
+                'convention_uid': convention_uid,
+                'panel_uid': panel_uid,
+                'room_uid': None,
+                'begin_date': self.get_convention()["start_date"],
+                'end_date': None,
+                'panel': get_panel(panel_uid)
+            }
