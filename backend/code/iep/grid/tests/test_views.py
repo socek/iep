@@ -2,9 +2,7 @@ from datetime import datetime
 from unittest.mock import patch
 from uuid import uuid4
 
-from pyramid.httpexceptions import HTTPNotFound
 from pytest import fixture
-from pytest import raises
 
 from iep.application.drivers.query import NoResultFound
 from iep.application.testing import ViewFixture
@@ -69,8 +67,18 @@ class TestPanelTimeView(ViewFixture):
             yield mock
 
     @fixture
-    def mget_active_by_uid(self):
-        with patch("iep.grid.views.get_active_by_uid") as mock:
+    def mget_active(self):
+        with patch("iep.grid.views.get_active") as mock:
+            yield mock
+
+    @fixture
+    def mget_panel(self, view):
+        with patch("iep.grid.views.get_panel") as mock:
+            yield mock
+
+    @fixture
+    def mdelete(self, view):
+        with patch("iep.grid.views.delete") as mock:
             yield mock
 
     @fixture
@@ -88,23 +96,38 @@ class TestPanelTimeView(ViewFixture):
         with patch.object(view, "get_convention") as mock:
             yield mock
 
-    def test_get_panel_time_when_not_present(self, view, mrequest, mget_active_by_uid):
+    def test_get_panel_time_when_not_present(
+        self, view, mrequest, mget_active, mget_convention, mget_panel
+    ):
         """
-        ._get_panel_time should raise HTTPNotFound error when panel is not present.
+        ._get_panel_time should return empty panel time when it is not present.
         """
-        mget_active_by_uid.side_effect = NoResultFound()
+        mget_active.side_effect = NoResultFound()
         mrequest.matchdict["panel_uid"] = uuid4().hex
-        with raises(HTTPNotFound):
-            view._get_panel_time()
-        mget_active_by_uid.assert_called_once_with(mrequest.matchdict["panel_uid"])
+        mrequest.matchdict["convention_uid"] = uuid4().hex
 
-    def test_get_panel_time_when_present(self, view, mrequest, mget_active_by_uid):
+        assert view._get_panel_time() == {
+            "convention_uid": mrequest.matchdict["convention_uid"],
+            "panel_uid": mrequest.matchdict["panel_uid"],
+            "room_uid": None,
+            "begin_date": mget_convention.return_value["begin_date"],
+            "end_date": None,
+            "panel": mget_panel.return_value,
+        }
+        mget_active.assert_called_once_with(
+            mrequest.matchdict["convention_uid"], mrequest.matchdict["panel_uid"]
+        )
+
+    def test_get_panel_time_when_present(self, view, mrequest, mget_active):
         """
         ._get_panel_time should raise HTTPNotFound error when panel is not present.
         """
         mrequest.matchdict["panel_uid"] = uuid4().hex
-        assert view._get_panel_time() == mget_active_by_uid.return_value
-        mget_active_by_uid.assert_called_once_with(mrequest.matchdict["panel_uid"])
+        mrequest.matchdict["convention_uid"] = uuid4().hex
+        assert view._get_panel_time() == mget_active.return_value
+        mget_active.assert_called_once_with(
+            mrequest.matchdict["convention_uid"], mrequest.matchdict["panel_uid"]
+        )
 
     def test_validate(self, view, mget_panel_time, mget_user, mget_convention):
         """
@@ -155,3 +178,18 @@ class TestPanelTimeView(ViewFixture):
                 "end_date": end_date,
             },
         )
+
+    def test_delete(self, view, mrequest, mdelete):
+        """
+        .delete should delete object from the database
+        """
+        panel_uid = uuid4().hex
+        convention_uid = uuid4().hex
+        mrequest.matchdict = {
+            "panel_uid": panel_uid,
+            "convention_uid": convention_uid,
+        }
+
+        view.delete()
+
+        mdelete.assert_called_once_with(convention_uid, panel_uid)

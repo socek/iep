@@ -71,6 +71,15 @@ class PanelTimeView(BaseConventionView):
         panel_uid = self.request.matchdict["panel_uid"]
         convention_uid = self.request.matchdict["convention_uid"]
         delete(convention_uid, panel_uid)
+
+        log.info(
+            "Removed PanelTime: Convent:{0} Panel:{1} by user:{2}".format(
+                convention_uid,
+                panel_uid,
+                self.get_user_id(),
+            )
+        )
+
         return {"is_success": True}
 
     def patch(self):
@@ -81,7 +90,7 @@ class PanelTimeView(BaseConventionView):
         update = self.get_validated_fields(PanelTimeSchema())
         update_by_uid(uid, update)
 
-        log.info("Updated Panel: {0} by {1}".format(uid, self.get_user_id()))
+        log.info("Updated PanelTime: {0} by {1}".format(uid, self.get_user_id()))
         log.debug("{}:{}".format(uid, update))
 
     @cache_per_request("panel")

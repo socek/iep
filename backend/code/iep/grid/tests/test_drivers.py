@@ -64,3 +64,10 @@ class TestPanelTimeDelete(IntegrationFixture):
 
         elements = list(list_active_by_convention(convention2_uid))
         assert len(elements) == 0
+
+    def test_get_active_when_missing(self):
+        """
+        get_active should raise NoResultFound when item is not found.
+        """
+        with raises(NoResultFound):
+            get_active("x", "x")
