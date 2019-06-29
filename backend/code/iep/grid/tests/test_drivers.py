@@ -3,12 +3,12 @@ from pytest import raises
 
 from iep.application.drivers.query import NoResultFound
 from iep.application.testing import IntegrationFixture
-from iep.panels.planning.drivers.command import delete
-from iep.panels.planning.drivers.command import save_new
-from iep.panels.planning.drivers.command import upsert
-from iep.panels.planning.drivers.query import get_active
-from iep.panels.planning.drivers.query import get_active_by_uid
-from iep.panels.planning.drivers.query import list_active_by_convention
+from iep.grid.drivers.command import delete
+from iep.grid.drivers.command import save_new
+from iep.grid.drivers.command import upsert
+from iep.grid.drivers.query import get_active
+from iep.grid.drivers.query import get_active_by_uid
+from iep.grid.drivers.query import list_active_by_convention
 
 
 class TestPanelTimeDelete(IntegrationFixture):

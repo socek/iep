@@ -18,7 +18,7 @@ from iep.auth.drivers import query as user_query
 from iep.auth.models import User
 from iep.conventions.drivers import command as convention_command
 from iep.panels.drivers import command as panel_command
-from iep.panels.planning.drivers import command as paneltime_command
+from iep.grid.drivers import command as paneltime_command
 from iep.rooms.drivers import command as room_command
 
 

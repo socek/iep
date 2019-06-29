@@ -8,8 +8,8 @@ from pytest import raises
 
 from iep.application.drivers.query import NoResultFound
 from iep.application.testing import ViewFixture
-from iep.panels.planning.views import PanelTimeView
-from iep.panels.planning.views import PanelTimesView
+from iep.grid.views import PanelTimeView
+from iep.grid.views import PanelTimesView
 
 
 class TestPanelTimesView(ViewFixture):
@@ -19,17 +19,17 @@ class TestPanelTimesView(ViewFixture):
 
     @fixture
     def mlist_active_by_convention(self):
-        with patch("iep.panels.planning.views.list_active_by_convention") as mock:
+        with patch("iep.grid.views.list_active_by_convention") as mock:
             yield mock
 
     @fixture
     def mupsert(self):
-        with patch("iep.panels.planning.views.upsert") as mock:
+        with patch("iep.grid.views.upsert") as mock:
             yield mock
 
     @fixture
     def mget_panel(self):
-        with patch("iep.panels.planning.views.get_panel") as mock:
+        with patch("iep.grid.views.get_panel") as mock:
             yield mock
 
     def test_get(self, view, mlist_active_by_convention, mrequest):
@@ -65,12 +65,12 @@ class TestPanelTimeView(ViewFixture):
 
     @fixture
     def mupdate_by_uid(self):
-        with patch("iep.panels.planning.views.update_by_uid") as mock:
+        with patch("iep.grid.views.update_by_uid") as mock:
             yield mock
 
     @fixture
     def mget_active_by_uid(self):
-        with patch("iep.panels.planning.views.get_active_by_uid") as mock:
+        with patch("iep.grid.views.get_active_by_uid") as mock:
             yield mock
 
     @fixture

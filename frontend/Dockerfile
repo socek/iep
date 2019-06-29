@@ -1,4 +1,4 @@
-FROM node:8.15.0 as builder
+FROM node:8.15.0 as dev
 RUN mkdir -p /code
 ENV PATH="${HOME}/.yarn/bin:${HOME}/.config/yarn/global/node_modules/.bin:${PATH}"
 
@@ -15,10 +15,10 @@ ADD code/package.json .
 ADD code/.yarnrc .
 RUN yarn install
 RUN yarn add @babel/runtime
-
-FROM builder as dev
-COPY code /code
 CMD yarn run dev
+
+FROM dev as builder
+COPY code /code
 
 FROM dev AS frontend
 

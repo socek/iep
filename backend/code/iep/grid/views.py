@@ -6,12 +6,12 @@ from iep.application.drivers.query import NoResultFound
 from iep.conventions.view_mixins import BaseConventionView
 from iep.panels.drivers.query import get_active_by_uid as get_panel
 
-from iep.panels.planning.drivers.command import delete
-from iep.panels.planning.drivers.command import update_by_uid
-from iep.panels.planning.drivers.command import upsert
-from iep.panels.planning.drivers.query import get_active
-from iep.panels.planning.drivers.query import list_active_by_convention
-from iep.panels.planning.schemas import PanelTimeSchema
+from iep.grid.drivers.command import delete
+from iep.grid.drivers.command import update_by_uid
+from iep.grid.drivers.command import upsert
+from iep.grid.drivers.query import get_active
+from iep.grid.drivers.query import list_active_by_convention
+from iep.grid.schemas import PanelTimeSchema
 
 log = getLogger(__name__)
 

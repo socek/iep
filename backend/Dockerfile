@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7 as dev
 
 # Configuration
 ENV PYTHONUNBUFFERED 1
@@ -21,11 +21,14 @@ USER user
 COPY --chown=user:user bashrc /home/user/.bashrc
 COPY --chown=user:user code/Pipfile $APP_DIR
 COPY --chown=user:user code/Pipfile.lock $APP_DIR
+COPY --chown=user:user code/setup.py $APP_DIR
 RUN pipenv install --dev
+RUN pipenv run python setup.py develop
+CMD ./start.sh
+
+FROM dev as backend
 
 # Copy all the code and run setuo.py
 COPY --chown=user:user code $APP_DIR
-RUN pipenv run python setup.py develop
 
-CMD ./start.sh
 EXPOSE 18765

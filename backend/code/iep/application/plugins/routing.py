@@ -2,7 +2,7 @@ from sapp.plugins.pyramid.routing import Routing
 
 from iep.auth.routing import auth_routing
 from iep.conventions.routing import conventions_routing
-from iep.panels.planning.routing import panel_times_routing
+from iep.grid.routing import panel_times_routing
 from iep.panels.routing import panels_routing
 from iep.rooms.routing import rooms_routing
 
