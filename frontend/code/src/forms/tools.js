@@ -165,16 +165,20 @@ export function convertToForm (obj) {
     return form
   }
 
-  obj._parseErrorResponse = function (response) {
+  obj._parseErrorResponse = function (fail, response) {
     if (response.status === 400) {
       this.setErrors(response.body)
     } else {
-      console.log('something bad has happened', response)
+      if (fail) {
+        fail(response)
+      } else {
+        console.log('something bad has happened', response)
+      }
     }
   }
 
-  obj.submit = function (query, success) {
-    query().then(success).catch(this._parseErrorResponse.bind(this))
+  obj.submit = function (query, success, fail) {
+    return query().then(success, this._parseErrorResponse.bind(this, fail))
   }
 
   return obj

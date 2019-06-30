@@ -8,6 +8,7 @@
     :fetchContent="fetchContent"
     @afterFetchContent="afterFetchContentHandler">
     <template slot="content">
+      <b-alert v-if="is_conflict" show variant="danger">W tym czasie i pokoju jest już inny panel!</b-alert>
       <p>Panel: <strong>{{panelName}}</strong></p>
       <dropdown ref="room" v-model="form.room_uid" :options="rooms" label="Pokój"></dropdown>
       <datetime-input v-model="form.begin_date" label="Początek"></datetime-input>
@@ -24,6 +25,7 @@ export default {
   data () {
     return {
       val: '',
+      is_conflict: false,
       panelUid: '',
       panelName: '',
       form: form({
@@ -69,10 +71,20 @@ export default {
       let data = form.toData()
       data.panel_uid = this.panelUid
       form.submit(
-        () => gridResource(this).create({}, data),
+        () => {
+          this.is_conflict = false
+          return gridResource(this).create({}, data)
+        },
         (response) => {
           this.$refs.dialog.hide()
           this.$store.dispatch('conventions/fetchConventions')
+        },
+        (response) => {
+          if (response.status === 409) {
+            this.is_conflict = true
+          } else {
+            console.log('Unhandled exception', response)
+          }
         }
       )
     }
