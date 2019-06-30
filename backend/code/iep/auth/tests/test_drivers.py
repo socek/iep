@@ -59,3 +59,10 @@ class TestUserDriver(IntegrationFixture):
         assert data[0]["email"] == user.email
         assert data[0]["is_admin"] == user.is_admin
         assert data[0]["password"] == user.password
+
+    def test_save_with_wrong_argument(self):
+        """
+        save_new should raise error when trying to save not existing parameter
+        """
+        with raises(AttributeError):
+            user_command.save_new(something=True)

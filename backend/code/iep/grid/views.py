@@ -1,6 +1,8 @@
 from datetime import timedelta
 from logging import getLogger
 
+from pyramid.httpexceptions import HTTPConflict
+
 from iep.application.cache import cache_per_request
 from iep.application.drivers.query import NoResultFound
 from iep.conventions.view_mixins import BaseConventionView
@@ -10,6 +12,7 @@ from iep.grid.drivers.command import delete
 from iep.grid.drivers.command import update_by_uid
 from iep.grid.drivers.command import upsert
 from iep.grid.drivers.query import get_active
+from iep.grid.drivers.query import is_time_frame_avalible
 from iep.grid.drivers.query import list_active_by_convention
 from iep.grid.schemas import PanelTimeSchema
 
@@ -38,19 +41,34 @@ class PanelTimesView(BaseConventionView):
             minutes=panel["minutes"]
         )
 
-        upsert(**panel_time)
-
-        log.info(
-            "Upserted new PanelTime: Convent:{0} Panel:{1} Room:{2} by user:{3}".format(
-                self._convention_uid,
-                panel_time["panel_uid"],
-                panel_time["room_uid"],
-                self.get_user_id(),
-            )
+        can_add = is_time_frame_avalible(
+            panel_time["convention_uid"],
+            panel_time["room_uid"],
+            panel_time["begin_date"],
+            panel_time["end_date"],
         )
-        log.debug("{}".format(panel_time))
+        if can_add:
+            upsert(**panel_time)
 
-        return {"is_success": True}
+            log.info(
+                "Upserted new PanelTime: Convent:{0} Panel:{1} Room:{2} by user:{3}".format(
+                    self._convention_uid,
+                    panel_time["panel_uid"],
+                    panel_time["room_uid"],
+                    self.get_user_id(),
+                )
+            )
+            log.debug("{}".format(panel_time))
+
+            return {"is_success": True}
+        else:
+            raise HTTPConflict(
+                json={
+                    "is_success": False,
+                    "code": 1,
+                    "message": "Time frame is already taken.",
+                }
+            )
 
 
 class PanelTimeView(BaseConventionView):
@@ -74,9 +92,7 @@ class PanelTimeView(BaseConventionView):
 
         log.info(
             "Removed PanelTime: Convent:{0} Panel:{1} by user:{2}".format(
-                convention_uid,
-                panel_uid,
-                self.get_user_id(),
+                convention_uid, panel_uid, self.get_user_id()
             )
         )
 

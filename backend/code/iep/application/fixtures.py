@@ -12,7 +12,6 @@ class FixturesMixin(object):
     # Fixtures:
     # convention1
     # |- panel1
-    # |- panel2
     # |- room1
     # |- room2
     # |- paneltime1
@@ -33,12 +32,6 @@ class FixturesMixin(object):
     @fixture
     def panel1_uid(self, convention1_uid):
         uid = panel_command.save_new(name="panel 1", convention_uid=convention1_uid, minutes=120)
-        yield uid
-        panel_command.force_delete(uid)
-
-    @fixture
-    def panel2_uid(self, convention1_uid):
-        uid = panel_command.save_new(name="panel 2", convention_uid=convention1_uid)
         yield uid
         panel_command.force_delete(uid)
 

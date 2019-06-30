@@ -2,7 +2,9 @@ from datetime import datetime
 from unittest.mock import patch
 from uuid import uuid4
 
+from pyramid.httpexceptions import HTTPConflict
 from pytest import fixture
+from pytest import raises
 
 from iep.application.drivers.query import NoResultFound
 from iep.application.testing import ViewFixture
@@ -30,6 +32,11 @@ class TestPanelTimesView(ViewFixture):
         with patch("iep.grid.views.get_panel") as mock:
             yield mock
 
+    @fixture
+    def mis_time_frame_avalible(self):
+        with patch("iep.grid.views.is_time_frame_avalible") as mock:
+            yield mock
+
     def test_get(self, view, mlist_active_by_convention, mrequest):
         """
         GET should return serialized list of all active panels.
@@ -39,10 +46,11 @@ class TestPanelTimesView(ViewFixture):
             mrequest.matchdict["convention_id"]
         )
 
-    def test_put(self, view, mupsert, mget_panel, mrequest):
+    def test_put(self, view, mupsert, mget_panel, mrequest, mis_time_frame_avalible):
         """
         PUT should create and save new model.
         """
+        mis_time_frame_avalible.return_value = True
         mrequest.json_body = {
             "convention_uid": uuid4().hex,
             "panel_uid": uuid4().hex,
@@ -54,6 +62,24 @@ class TestPanelTimesView(ViewFixture):
         mget_panel.return_value = {"minutes": 15}
 
         assert view.put() == {"is_success": True}
+
+    def test_put_on_conflict(self, view, mupsert, mget_panel, mrequest, mis_time_frame_avalible):
+        """
+        PUT should raise error when time frame is already taken
+        """
+        mis_time_frame_avalible.return_value = False
+        mrequest.json_body = {
+            "convention_uid": uuid4().hex,
+            "panel_uid": uuid4().hex,
+            "room_uid": uuid4().hex,
+            "begin_date": datetime.now().isoformat(),
+            "end_date": datetime.now().isoformat(),
+        }
+
+        mget_panel.return_value = {"minutes": 15}
+
+        with raises(HTTPConflict):
+            view.put()
 
 
 class TestPanelTimeView(ViewFixture):
@@ -185,10 +211,7 @@ class TestPanelTimeView(ViewFixture):
         """
         panel_uid = uuid4().hex
         convention_uid = uuid4().hex
-        mrequest.matchdict = {
-            "panel_uid": panel_uid,
-            "convention_uid": convention_uid,
-        }
+        mrequest.matchdict = {"panel_uid": panel_uid, "convention_uid": convention_uid}
 
         view.delete()
 
