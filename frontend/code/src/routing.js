@@ -8,6 +8,7 @@ import PanelList from '@/panels/list'
 import PanelGrid from '@/grid/grid'
 import RoomList from '@/rooms/list'
 import ConventionList from '@/conventions/list'
+import GuestList from '@/guests/list'
 
 Vue.use(Router)
 
@@ -65,6 +66,12 @@ let router = new Router({
       path: '/conventions/:convention_uid/panelgrid/',
       name: 'PanelGrid',
       component: PanelGrid,
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/conventions/:convention_uid/guests/',
+      name: 'GuestList',
+      component: GuestList,
       beforeEnter: requireAuth
     }
   ]

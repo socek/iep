@@ -6,6 +6,7 @@ import conventions from '@/conventions/store'
 import grid from '@/grid/store'
 import rooms from '@/rooms/store'
 import panels from '@/panels/store'
+import guests from '@/guests/store'
 
 Vue.use(Vuex)
 
@@ -31,6 +32,7 @@ export default new Vuex.Store({
     conventions,
     grid,
     rooms,
-    panels
+    panels,
+    guests
   }
 })
