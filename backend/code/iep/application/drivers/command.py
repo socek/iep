@@ -19,6 +19,8 @@ class SaveNewForModel(BaseForModel):
     def __call__(self, *args, **kwargs):
         obj = self.model()
         for key, value in kwargs.items():
+            if not hasattr(obj, key):
+                raise AttributeError(f'{obj.__class__.__name__}.{key} is not valid parameter')
             setattr(obj, key, value)
 
         uid = self._save(obj)
