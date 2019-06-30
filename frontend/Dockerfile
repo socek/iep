@@ -19,14 +19,11 @@ CMD yarn run dev
 
 FROM dev as builder
 COPY code /code
-
-FROM dev AS frontend
-
 RUN yarn build --force
 
 FROM nginx:1.15.7-alpine
 WORKDIR /usr/share/nginx/html
 
-COPY --from=frontend /code/dist .
+COPY --from=builder /code/dist .
 RUN find .
 
