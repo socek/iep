@@ -1,4 +1,6 @@
 from sapp import Decorator
+from sqlalchemy import and_
+from sqlalchemy import or_
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import NoResultFound as SANoResultFound
 
@@ -38,6 +40,7 @@ class GetActive(object):
     """
     Get active row using uniq group attributes: convention_uid, panel_uid
     """
+
     @Decorator(app, "dbsession")
     def _get_active(self, convention_uid, panel_uid, dbsession):
         return (
@@ -62,7 +65,51 @@ class GetActive(object):
             raise NoResultFound
 
 
+class IsTimeFrameAvalible(object):
+    """
+    Get the time period for the panel and check if there is another item in
+    that time frame.
+    """
+
+    @Decorator(app, "dbsession")
+    def _get_panels_from_period(
+        self, convention_uid, room_uid, begin_date, end_date, ignore_uid, dbsession
+    ):
+        query = (
+            dbsession.query(PanelTimeData)
+            .filter(
+                PanelTimeData.convention_uid == convention_uid,
+                PanelTimeData.room_uid == room_uid,
+                or_(
+                    and_(
+                        PanelTimeData.begin_date > begin_date,
+                        PanelTimeData.begin_date < end_date,
+                    ),
+                    and_(
+                        PanelTimeData.end_date > begin_date,
+                        PanelTimeData.end_date < end_date,
+                    ),
+                    and_(
+                        PanelTimeData.begin_date < begin_date,
+                        PanelTimeData.end_date > end_date,
+                    ),
+                ),
+            )
+        )
+        if ignore_uid:
+            query = query.filter(PanelTimeData.panel_uid != ignore_uid)
+
+        return query.all()
+
+    def __call__(self, convention_uid, room_uid, begin_date, end_date, ignore_uid=None):
+        panels = self._get_panels_from_period(
+            convention_uid, room_uid, begin_date, end_date, ignore_uid
+        )
+        return len(panels) == 0
+
+
 list_active = ListActiveForModel(PanelTimeData)
 get_active_by_uid = GetActiveByUidForModel(PanelTimeData)
 list_active_by_convention = ListActive()
 get_active = GetActive()
+is_time_frame_avalible = IsTimeFrameAvalible()
