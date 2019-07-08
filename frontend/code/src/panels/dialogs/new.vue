@@ -10,22 +10,25 @@
       <text-input v-model="form.description" label="Opis" placeholder="Opis widoczny w programie konwentu"></text-input>
       <text-input v-model="form.additional" label="Dodatkowy opis" placeholder="Dodatkowy opis widoczny tylko dla obsługi"></text-input>
       <text-input v-model="form.minutes" label="Czas trwania" placeholder="W minutach"></text-input>
+      <guests v-model="form.guests_uids.value" />
     </template>
   </dialogform>
 </template>
 
 <script>
-import panelResource from '@/panels/resource'
-import form from '@/forms'
+import panelResource from "@/panels/resource"
+import form from "@/forms"
+import guests from "@/panels/parts/guests"
 
 export default {
   data () {
     return {
       form: form({
-        name: '',
-        description: '',
-        additional: '',
-        minutes: ''
+        name: "",
+        description: "",
+        additional: "",
+        minutes: "",
+        guests_uids: []
       })
     }
   },
@@ -35,10 +38,13 @@ export default {
         () => panelResource(this).create({}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('panels/fetch', true)
+          this.$store.dispatch("panels/fetch", true)
         }
       )
     }
+  },
+  components: {
+    guests
   }
 }
 </script>

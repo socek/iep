@@ -1,5 +1,6 @@
-from marshmallow.fields import Boolean
+# from marshmallow.fields import Boolean
 from marshmallow.fields import Integer
+from marshmallow.fields import List
 from marshmallow.fields import String
 
 from iep.application.schemas import DataModelSchema
@@ -14,5 +15,6 @@ class PanelSchema(DataModelSchema):
     additional = String()
     creator = String()
     room = String()
-    accepted = Boolean()
+    # accepted = Boolean()
     minutes = Integer()
+    guests_uids = List(UUID(), default=[])

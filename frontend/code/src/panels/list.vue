@@ -36,6 +36,7 @@ export default {
   },
   created () {
     this.$store.dispatch('panels/fetch')
+    this.$store.dispatch('guests/fetch')
   },
   computed: {
     provider () {
