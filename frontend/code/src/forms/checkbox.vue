@@ -1,12 +1,12 @@
 <template>
   <div role="group" class="form-group">
-    <input
-      type="checkbox"
-      class="form-control"
-
+    <b-form-checkbox
       v-model="value.value"
-      :class="inputClass()">
-    <label v-if="label" class="col-form-label">{{ label }}:</label>
+      :class="inputClass()"
+      value="true"
+      unchecked-value="false">
+        {{ label }}
+      </b-form-checkbox>
     <div class="invalid-feedback" style="display: block;" v-for="message in value.errors">{{ message }}</div>
   </div>
 </template>
