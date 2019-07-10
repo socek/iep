@@ -7,6 +7,6 @@
 </template>
 
 <script>
-  import base from '@/forms/base'
+  import base from "@/forms/base"
   export default {extends: base}
 </script>

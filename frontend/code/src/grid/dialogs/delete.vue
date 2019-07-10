@@ -10,18 +10,18 @@
 </template>
 
 <script>
-import dialogModal from '@/common/dialog'
-import gridResource from '@/grid/resource'
+import dialogModal from "@/common/dialog"
+import gridResource from "@/grid/resource"
 
 export default {
-  props: ['panelTime'],
+  props: ["panelTime"],
   methods: {
     okHandler () {
       gridResource(this).delete({
         panel_uid: this.panelTime.panel_uid,
         room_uid: this.panelTime.room_uid
       })
-      this.$store.dispatch('conventions/fetchConventions')
+      this.$store.dispatch("conventions/fetchConventions")
     }
   },
   components: {

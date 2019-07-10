@@ -1,5 +1,5 @@
 function isFunction (functionToCheck) {
-  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]'
+  return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]"
 }
 
 export function convertToForm (obj) {
@@ -15,9 +15,9 @@ export function convertToForm (obj) {
     obj._schema = []
     for (let index in obj) {
       let value = obj[index]
-      if (index.startsWith('_')) {
+      if (index.startsWith("_")) {
         // do nothing. "_" prefixed names are special fields
-      } else if (typeof (value) === 'object') {
+      } else if (typeof (value) === "object") {
         obj[index] = toObject(value)
       } else {
         obj[index] = toField(value)
@@ -54,7 +54,7 @@ export function convertToForm (obj) {
       let fields = {}
       for (let index in form) {
         let value = form[index]
-        if (index.startsWith('_') || isFunction(value)) {
+        if (index.startsWith("_") || isFunction(value)) {
           // do nothing
         } else if (value && value.value !== undefined) {
           fields[index] = value.value
@@ -74,7 +74,7 @@ export function convertToForm (obj) {
     // Remove error state from all fields
     for (let index in field) {
       let value = field[index]
-      if (index === 'errors') {
+      if (index === "errors") {
         field[index] = []
       } else if (value.default !== undefined) {
         field[index].errors = []
@@ -107,9 +107,9 @@ export function convertToForm (obj) {
   obj._setErrors = function (form, errors) {
     // Set error states and messages
     for (let index in errors) {
-      if (index.startsWith('_')) {
+      if (index.startsWith("_")) {
         form._schema = errors[index]
-      } else if (typeof (errors[index][0]) === 'string') {
+      } else if (typeof (errors[index][0]) === "string") {
         form[index].errors = errors[index]
       } else {
         form[index] = this._setErrors(form[index], errors[index])
@@ -135,7 +135,7 @@ export function convertToForm (obj) {
       let value = defaults[index]
       if (Array.isArray(value)) {
         form[index] = this._setDefaultsForList(value)
-      } else if (typeof (value) === 'object') {
+      } else if (typeof (value) === "object") {
         form[index] = this._setDefaults(form[index], value)
       } else if (form[index] === undefined) {
         // Ignore missing fields
@@ -172,7 +172,7 @@ export function convertToForm (obj) {
       if (fail) {
         fail(response)
       } else {
-        console.log('something bad has happened', response)
+        console.log("something bad has happened", response)
       }
     }
   }

@@ -18,25 +18,25 @@
 </template>
 
 <script>
-import roomResource from '@/rooms/resource'
-import newDialog from '@/rooms/dialogs/new'
-import editDialog from '@/rooms/dialogs/edit'
+import roomResource from "@/rooms/resource"
+import newDialog from "@/rooms/dialogs/new"
+import editDialog from "@/rooms/dialogs/edit"
 
 export default {
   data () {
     return {
       isBusy: false,
       fields: [
-        {key: 'name', label: 'Tytuł'},
-        {key: 'number', label: 'Numer'},
-        {key: 'floor', label: 'Piętro'},
-        {key: 'actions', label: 'Akcje'}],
+        {key: "name", label: "Tytuł"},
+        {key: "number", label: "Numer"},
+        {key: "floor", label: "Piętro"},
+        {key: "actions", label: "Akcje"}],
       items: [],
       resource: roomResource(this)
     }
   },
   created () {
-    this.$store.dispatch('rooms/fetch')
+    this.$store.dispatch("rooms/fetch")
   },
   computed: {
     provider () {

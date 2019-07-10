@@ -18,25 +18,25 @@
 </template>
 
 <script>
-import panelResource from '@/panels/resource'
-import newDialog from '@/panels/dialogs/new'
-import editDialog from '@/panels/dialogs/edit'
+import panelResource from "@/panels/resource"
+import newDialog from "@/panels/dialogs/new"
+import editDialog from "@/panels/dialogs/edit"
 
 export default {
   data () {
     return {
       isBusy: false,
       fields: [
-        {key: 'name', label: 'Tytuł'},
-        {key: 'description', label: 'Opis'},
-        {key: 'actions', label: 'Akcje'}],
+        {key: "name", label: "Tytuł"},
+        {key: "description", label: "Opis"},
+        {key: "actions", label: "Akcje"}],
       items: [],
       resource: panelResource(this)
     }
   },
   created () {
-    this.$store.dispatch('panels/fetch')
-    this.$store.dispatch('guests/fetch')
+    this.$store.dispatch("panels/fetch")
+    this.$store.dispatch("guests/fetch")
   },
   computed: {
     provider () {

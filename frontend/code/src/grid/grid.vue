@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import panel from '@/grid/panel'
-import timestamp from '@/grid/timestamp'
-import room from '@/grid/room'
-import panelTime from '@/grid/panel_time'
+import panel from "@/grid/panel"
+import timestamp from "@/grid/timestamp"
+import room from "@/grid/room"
+import panelTime from "@/grid/panel_time"
 
 export default {
   data () {
@@ -35,8 +35,8 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('rooms/fetch')
-    this.$store.dispatch('panels/fetch')
+    this.$store.dispatch("rooms/fetch")
+    this.$store.dispatch("panels/fetch")
   },
   computed: {
     rooms () {
@@ -52,9 +52,9 @@ export default {
       return this.$store.state.grid.panelTimes
     },
     isConventActive () {
-      let isActive = this.$store.getters['conventions/isActive']
+      let isActive = this.$store.getters["conventions/isActive"]
       if (isActive) {
-        this.$store.dispatch('grid/init')
+        this.$store.dispatch("grid/init")
       }
       return isActive
     }
@@ -62,7 +62,7 @@ export default {
   methods: {
     getStyle () {
       return {
-        gridTemplateColumns: 'auto '.repeat(this.rooms.length + 1)
+        gridTemplateColumns: "auto ".repeat(this.rooms.length + 1)
       }
     }
   },
@@ -74,7 +74,7 @@ export default {
   },
   beforeCreate () {
     this.unsubscribe = this.$store.subscribe((action, state) => {
-      if (['rooms/set', 'panels/set'].includes(action.type)) {
+      if (["rooms/set", "panels/set"].includes(action.type)) {
         this.componentKey += 1
       }
     })

@@ -21,13 +21,13 @@
       title: String,
       variant: {
         type: String,
-        default: 'outline-primary'
+        default: "outline-primary"
       },
       fetchContent: {
         default: false
       },
       size: {
-        default: 'md'
+        default: "md"
       },
       value: {
         type: Object,
@@ -52,7 +52,7 @@
           this.fetchContent().then((response) => {
             this.value.setDefaults(response.body)
             this.isBusy = false
-            this.$emit('afterFetchContent', response.body)
+            this.$emit("afterFetchContent", response.body)
           })
         } else {
           this.value.reset()

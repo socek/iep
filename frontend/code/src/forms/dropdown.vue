@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import base from '@/forms/base'
+  import base from "@/forms/base"
 
   export default {
     extends: base,
@@ -47,7 +47,7 @@
       inputHandler (element) {
         let value = this.value
         value.value = element ? element.value : null
-        this.$emit('input', value)
+        this.$emit("input", value)
       }
     }
   }

@@ -23,17 +23,17 @@
 </template>
 
 <script>
-import authResource from '@/auth/resource'
-import form from '@/forms'
+import authResource from "@/auth/resource"
+import form from "@/forms"
 
 export default {
   data () {
     return {
       form: form({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
       }),
       resource: authResource(this)
     }
@@ -43,15 +43,15 @@ export default {
       form.submit(
         () => this.resource.signUp({}, form.toData()),
         (response) => {
-          this.$store.commit('auth/logIn', response.body.jwt)
-          this.$router.push({name: 'PanelList'})
+          this.$store.commit("auth/logIn", response.body.jwt)
+          this.$router.push({name: "PanelList"})
         }
       )
     }
   },
   computed: {
     isAuthenticated () {
-      return this.$store.getters['auth/isAuthenticated']
+      return this.$store.getters["auth/isAuthenticated"]
     }
   }
 }

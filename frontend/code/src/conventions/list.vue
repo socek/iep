@@ -19,24 +19,24 @@
 </template>
 
 <script>
-import newDialog from '@/conventions/dialogs/new'
-import editDialog from '@/conventions/dialogs/edit'
+import newDialog from "@/conventions/dialogs/new"
+import editDialog from "@/conventions/dialogs/edit"
 
 export default {
   data () {
     return {
       isBusy: false,
       fields: [
-        {key: 'name', label: 'Nazwa'},
-        {key: 'start_date', label: 'Początek'},
-        {key: 'end_date', label: 'Zakończenie'},
-        {key: 'actions', label: 'Akcje'}],
+        {key: "name", label: "Nazwa"},
+        {key: "start_date", label: "Początek"},
+        {key: "end_date", label: "Zakończenie"},
+        {key: "actions", label: "Akcje"}],
       items: []
     }
   },
   methods: {
     activate (uid) {
-      this.$store.dispatch('conventions/activate', uid)
+      this.$store.dispatch("conventions/activate", uid)
     }
   },
   computed: {

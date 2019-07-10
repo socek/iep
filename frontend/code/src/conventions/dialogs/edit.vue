@@ -6,6 +6,8 @@
     </template>
 
     <template slot="content">
+      <vue-form-generator :schema="schema" :model="model"></vue-form-generator>
+
       <text-input v-model="form.name" label="Nazwa" placeholder="Imladris"></text-input>
       <datetime-input v-model="form.start_date" label="Początek"></datetime-input>
       <datetime-input v-model="form.end_date" label="Koniec"></datetime-input>
@@ -14,19 +16,42 @@
 </template>
 
 <script>
-import conventResource from '@/conventions/resource'
-import form from '@/forms'
+import conventResource from "@/conventions/resource"
+import form from "@/forms"
 
 export default {
-  props: ['convention_uid'],
+  props: ["convention_uid"],
 
   data () {
     return {
       form: form({
-        name: '',
-        start_date: '',
-        end_date: ''
+        name: "",
+        start_date: "",
+        end_date: ""
       }),
+      model: {
+        name: "",
+        start_date: "",
+        end_date: ""
+      },
+      schema: {
+        fields: [{
+          type: "input",
+          inputType: "text",
+          label: "Nazwa",
+          model: "name",
+          readonly: false,
+          featured: false,
+          disabled: false
+        }, {
+          type: "dateTimePicker",
+          label: "Początek",
+          model: "start_date",
+          readonly: false,
+          featured: false,
+          disabled: false
+        }]
+      },
       resource: conventResource(this)
     }
   },
@@ -39,7 +64,7 @@ export default {
         () => conventResource(this).update({convention_uid: this.convention_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('conventions/fetchConventions')
+          this.$store.dispatch("conventions/fetchConventions")
         }
       )
     }

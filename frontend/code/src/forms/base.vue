@@ -13,7 +13,7 @@
     methods: {
       inputClass () {
         let errors = this.value.errors
-        return {'is-invalid': errors && errors.length > 0}
+        return {"is-invalid": errors && errors.length > 0}
       }
     }
   }

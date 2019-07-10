@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import panelTime from '@/grid/dialogs/panel_time'
+import panelTime from "@/grid/dialogs/panel_time"
 
 export default {
-  props: ['panels'],
+  props: ["panels"],
   data () {
     return {
       value: {}

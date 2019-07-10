@@ -14,7 +14,7 @@
       title: String,
       variant: {
         type: String,
-        default: 'primary'
+        default: "primary"
       },
       hideFooter: {
         default: false
@@ -24,10 +24,10 @@
       showModal (modal) {
         this.moveModalToTopOfTheDOM()
         this.$refs.baseModal.show()
-        this.$emit('onRefresh', true)
+        this.$emit("onRefresh", true)
       },
       moveModalToTopOfTheDOM () {
-        let div = this.$el.querySelector('div')
+        let div = this.$el.querySelector("div")
         if (div) document.body.appendChild(div)
       },
       hideModal (modal) {

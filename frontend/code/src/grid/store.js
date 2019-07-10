@@ -1,5 +1,5 @@
-import {moment, interval, timeFormat} from '@/grid/utils'
-import gridResource from '@/grid/resource'
+import {moment, interval, timeFormat} from "@/grid/utils"
+import gridResource from "@/grid/resource"
 
 export default {
   namespaced: true,
@@ -20,7 +20,7 @@ export default {
 
       while (current <= endDate) {
         state.timestamps.push(current.format(timeFormat))
-        current = current.add(interval, 'm')
+        current = current.add(interval, "m")
       }
     },
     setPanelTimes: function (state, panelTimes) {
@@ -30,15 +30,15 @@ export default {
   actions: {
     init: (store) => {
       let resource = gridResource(store.rootGetters.vue)
-      let startDate = store.rootGetters['conventions/startDate']
-      let endDate = store.rootGetters['conventions/endDate']
+      let startDate = store.rootGetters["conventions/startDate"]
+      let endDate = store.rootGetters["conventions/endDate"]
       if (!(startDate && endDate)) {
         return
       }
 
       resource.list().then((result) => {
-        store.commit('createTimestamps', {startDate, endDate})
-        store.commit('setPanelTimes', result.body)
+        store.commit("createTimestamps", {startDate, endDate})
+        store.commit("setPanelTimes", result.body)
       })
     }
   }

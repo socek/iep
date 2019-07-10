@@ -1,4 +1,4 @@
-import guestResource from '@/guests/resource'
+import guestResource from "@/guests/resource"
 
 export default {
   namespaced: true,
@@ -39,7 +39,7 @@ export default {
       if (refresh || !fetched) {
         let resource = guestResource(state.rootState.vue)
         resource.list().then((response) => {
-          state.commit('set', response.data)
+          state.commit("set", response.data)
         })
       }
     }

@@ -18,25 +18,25 @@
 </template>
 
 <script>
-import guestResource from '@/guests/resource'
-import newDialog from '@/guests/dialogs/new'
-import editDialog from '@/guests/dialogs/edit'
+import guestResource from "@/guests/resource"
+import newDialog from "@/guests/dialogs/new"
+import editDialog from "@/guests/dialogs/edit"
 
 export default {
   data () {
     return {
       isBusy: false,
       fields: [
-        {key: 'name', label: 'Tytuł'},
-        {key: 'kind', label: 'Typ'},
-        {key: 'description', label: 'Opis'},
-        {key: 'actions', label: 'Akcje'}],
+        {key: "name", label: "Tytuł"},
+        {key: "kind", label: "Typ"},
+        {key: "description", label: "Opis"},
+        {key: "actions", label: "Akcje"}],
       items: [],
       resource: guestResource(this)
     }
   },
   created () {
-    this.$store.dispatch('guests/fetch')
+    this.$store.dispatch("guests/fetch")
   },
   computed: {
     provider () {

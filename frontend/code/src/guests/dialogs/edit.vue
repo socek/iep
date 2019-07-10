@@ -14,18 +14,18 @@
 </template>
 
 <script>
-import guestResource from '@/guests/resource'
-import form from '@/forms'
+import guestResource from "@/guests/resource"
+import form from "@/forms"
 
 export default {
-  props: ['guest_uid'],
+  props: ["guest_uid"],
 
   data () {
     return {
       form: form({
-        name: '',
-        kind: '',
-        description: ''}),
+        name: "",
+        kind: "",
+        description: ""}),
       resource: guestResource(this)
     }
   },
@@ -38,7 +38,7 @@ export default {
         () => guestResource(this).update({guest_uid: this.guest_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('guests/fetch', true)
+          this.$store.dispatch("guests/fetch", true)
         }
       )
     }

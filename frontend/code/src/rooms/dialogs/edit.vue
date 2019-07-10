@@ -14,17 +14,17 @@
 </template>
 
 <script>
-import roomResource from '@/rooms/resource'
-import form from '@/forms'
+import roomResource from "@/rooms/resource"
+import form from "@/forms"
 
 export default {
-  props: ['room_uid'],
+  props: ["room_uid"],
   data () {
     return {
       form: form({
-        name: '',
-        number: '',
-        floor: ''
+        name: "",
+        number: "",
+        floor: ""
       }),
       resource: roomResource(this)
     }
@@ -38,7 +38,7 @@ export default {
         () => roomResource(this).update({room_uid: this.room_uid}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('rooms/fetch', true)
+          this.$store.dispatch("rooms/fetch", true)
         }
       )
     }

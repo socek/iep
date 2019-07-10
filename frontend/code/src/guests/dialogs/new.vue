@@ -14,16 +14,16 @@
 </template>
 
 <script>
-import guestResource from '@/guests/resource'
-import form from '@/forms'
+import guestResource from "@/guests/resource"
+import form from "@/forms"
 
 export default {
   data () {
     return {
       form: form({
-        name: '',
-        kind: '',
-        description: ''
+        name: "",
+        kind: "",
+        description: ""
       })
     }
   },
@@ -33,7 +33,7 @@ export default {
         () => guestResource(this).create({}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('guests/fetch', true)
+          this.$store.dispatch("guests/fetch", true)
         }
       )
     }

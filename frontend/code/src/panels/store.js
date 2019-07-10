@@ -1,4 +1,4 @@
-import panelResource from '@/panels/resource'
+import panelResource from "@/panels/resource"
 
 export default {
   namespaced: true,
@@ -39,7 +39,7 @@ export default {
       if (refresh || !fetched) {
         let resource = panelResource(state.rootState.vue)
         resource.list().then((response) => {
-          state.commit('set', response.data)
+          state.commit("set", response.data)
         })
       }
     }

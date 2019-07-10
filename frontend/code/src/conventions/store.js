@@ -1,4 +1,4 @@
-import conventionResource from '@/conventions/resource'
+import conventionResource from "@/conventions/resource"
 
 export default {
   namespaced: true,
@@ -40,13 +40,13 @@ export default {
     fetchConventions: (state) => {
       let resource = conventionResource(state.rootState.vue)
       resource.list().then((response) => {
-        state.commit('setConventions', response.data)
+        state.commit("setConventions", response.data)
       })
     },
     activate: ({state, commit}, uid) => {
-      commit('setActive', uid)
-      commit('rooms/clear', {}, {root: true})
-      commit('panels/clear', {}, {root: true})
+      commit("setActive", uid)
+      commit("rooms/clear", {}, {root: true})
+      commit("panels/clear", {}, {root: true})
     }
   }
 }

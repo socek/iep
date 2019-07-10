@@ -33,19 +33,19 @@
         return false
       },
       isPanelActive (wallet) {
-        return this.$route.name === 'PanelDashboard' && this.$route.params.wallet_uid === wallet.uid
+        return this.$route.name === "PanelDashboard" && this.$route.params.wallet_uid === wallet.uid
       },
       isPanelListActive () {
-        return this.$route.name === 'PanelList'
+        return this.$route.name === "PanelList"
       },
       isRoomListActive () {
-        return this.$route.name === 'RoomList'
+        return this.$route.name === "RoomList"
       },
       isPanelGridActive () {
-        return this.$route.name === 'PanelGrid'
+        return this.$route.name === "PanelGrid"
       },
       isGuestListActive () {
-        return this.$route.name === 'GuestList'
+        return this.$route.name === "GuestList"
       }
     },
     computed: {

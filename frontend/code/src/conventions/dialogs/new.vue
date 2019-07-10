@@ -14,17 +14,17 @@
 </template>
 
 <script>
-import conventResource from '@/conventions/resource'
-import form from '@/forms'
+import conventResource from "@/conventions/resource"
+import form from "@/forms"
 
 export default {
   data () {
     return {
-      val: '',
+      val: "",
       form: form({
-        name: '',
-        start_date: '',
-        end_date: ''
+        name: "",
+        start_date: "",
+        end_date: ""
       })
     }
   },
@@ -34,7 +34,7 @@ export default {
         () => conventResource(this).create({}, form.toData()),
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('conventions/fetchConventions')
+          this.$store.dispatch("conventions/fetchConventions")
         }
       )
     }

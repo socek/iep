@@ -8,8 +8,8 @@
   export default {
     methods: {
       logout (event) {
-        this.$store.commit('auth/logOut')
-        this.$router.push({name: 'NotLoggedIn'})
+        this.$store.commit("auth/logOut")
+        this.$router.push({name: "NotLoggedIn"})
         event.preventDefault()
       }
     }
