@@ -3,10 +3,46 @@ from sapp import Decorator
 from iep import app
 from iep.application.drivers.command import DeleteByIdForModel
 from iep.application.drivers.command import ForceDeleteForModel
-from iep.application.drivers.command import SaveNewForModel
 from iep.guest2panel.drivers.dbmodels import Guest2PanelData
 
 from .dbmodels import PanelData
+
+
+class SaveNewForModel(object):
+    """
+    Save new row's data to the database. Returns new uid of the object.
+
+    Example:
+        save_new(name="my name is", surname="slimshady")
+    """
+
+    def __call__(self, *args, **kwargs):
+        guests_uids = kwargs.pop("guests_uids", [])
+        obj = PanelData()
+        for key, value in kwargs.items():
+            if not hasattr(obj, key):
+                raise AttributeError(
+                    f"{obj.__class__.__name__}.{key} is not valid parameter"
+                )
+            setattr(obj, key, value)
+
+        uid = self._save(obj, guests_uids)
+        return uid
+
+    @Decorator(app, "dbsession")
+    def _save(self, obj, guest_uids, dbsession):
+        dbsession.add(obj)
+        dbsession.flush()
+
+        for guest_uid in guest_uids:
+            link = Guest2PanelData()
+            link.convention_uid = obj.convention_uid
+            link.panel_uid = obj.uid
+            link.guest_uid = guest_uid
+            dbsession.add(link)
+
+        dbsession.commit()
+        return obj.uid
 
 
 class UpdateByIdForModel(object):
@@ -62,7 +98,7 @@ class UpdateByIdForModel(object):
         dbsession.commit()
 
 
-save_new = SaveNewForModel(PanelData)
+save_new = SaveNewForModel()
 update_by_uid = UpdateByIdForModel()
 delete_by_uid = DeleteByIdForModel(PanelData)
 force_delete = ForceDeleteForModel(PanelData)

@@ -8,6 +8,7 @@ import VueResource from "vue-resource"
 import Icon from "vue-awesome/components/Icon"
 import datePicker from "vue-bootstrap-datetimepicker"
 import vSelect from "vue-select"
+import Multiselect from "vue-multiselect"
 
 // Local imports
 import App from "@/App"
@@ -24,6 +25,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import "bootstrap-vue/dist/bootstrap-vue.css"
 import "pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css"
 import "@/common/style.css"
+import "vue-multiselect/dist/vue-multiselect.min.css"
 
 // External plugins
 Vue.component("icon", Icon)
@@ -31,6 +33,7 @@ Vue.use(BootstrapVue)
 Vue.use(VueResource)
 Vue.use(datePicker)
 Vue.component("v-select", vSelect)
+Vue.component("multiselect", Multiselect)
 
 Vue.use(nform)
 

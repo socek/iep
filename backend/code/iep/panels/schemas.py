@@ -13,8 +13,5 @@ class PanelSchema(DataModelSchema):
     name = String()
     description = String()
     additional = String()
-    creator = String()
-    room = String()
-    # accepted = Boolean()
     minutes = Integer()
     guests_uids = List(UUID(), default=[])

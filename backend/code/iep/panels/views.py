@@ -56,7 +56,6 @@ class PanelView(BaseConventionView):
         """
         uid = self.request.matchdict["panel_uid"]
         update = self.get_validated_fields(PanelSchema())
-        print(update)
         update_by_uid(uid, update)
 
         log.info("Updated Panel: {0} by {1}".format(uid, self.get_user_id()))

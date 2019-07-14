@@ -1,60 +1,62 @@
 <template>
-  <dialogform title="Edytuj panel" :fetchContent="fetchContent" ref="dialog" v-model="form" @submit="onSubmit" @afterFetchContent="afterFetchContent">
-
-    <template slot="anhor">
+  <ndialogform
+    title="Edytuj panel"
+    :fetchContent="fetchContent"
+    v-model="form"
+    :schema="schema"
+    @submit="submitHandler"
+  >
       <icon name="edit"></icon>
-    </template>
-
-    <template slot="content">
-      <text-input v-model="form.name" label="Tytuł" placeholder="Tytuł"></text-input>
-      <text-input v-model="form.description" label="Opis" placeholder="Opis widoczny w programie konwentu"></text-input>
-      <text-input v-model="form.additional" label="Dodatkowy opis" placeholder="Dodatkowy opis widoczny tylko dla obsługi"></text-input>
-      <text-input v-model="form.minutes" label="Czas trwania" placeholder="W minutach"></text-input>
-      <guests ref="guests" v-model="form.guests_uids" />
-    </template>
-  </dialogform>
+  </ndialogform>
 </template>
 
 <script>
 import panelResource from "@/panels/resource"
-import form from "@/forms"
-import guests from "@/panels/parts/guests"
+import schema from "./schema"
 
 export default {
   props: ["panel_uid"],
 
   data () {
     return {
-      form: form({
+      form: {
         name: "",
         description: "",
         additional: "",
-        // accepted: "",
         minutes: "",
-        guests_uids: []
-      }),
-      resource: panelResource(this)
+        guests: []
+      },
+      resource: panelResource(this),
+      schema: schema(this.guestMethod)
     }
   },
   methods: {
     fetchContent () {
-      return this.resource.get({panel_uid: this.panel_uid})
-    },
-    afterFetchContent (body) {
-      this.$refs.guests.setGuests(body.guests_uids)
-    },
-    onSubmit (form) {
-      form.submit(
-        () => panelResource(this).update({panel_uid: this.panel_uid}, form.toData()),
-        (response) => {
-          this.$refs.dialog.hide()
-          this.$store.dispatch("panels/fetch", true)
+      return this.resource.get({panel_uid: this.panel_uid}).then((content) => {
+        let guests = []
+        for (let uid of content.body.guests_uids) {
+          guests.push(this.$store.getters["guests/getGuest"](uid))
         }
-      )
+        content.body.guests = guests
+        return content
+      })
+    },
+    guestMethod (form) {
+      return this.$store.getters["guests/getGuests"]
+    },
+    submitHandler (dialog, form) {
+      form = Object.assign({}, form)
+      let guestUids = []
+      for (let guest of form.guests) {
+        guestUids.push(guest.uid)
+      }
+      form.guests_uids = guestUids
+      delete form.guests
+      panelResource(this).update({panel_uid: this.panel_uid}, form).then((response) => {
+        dialog.hide()
+        this.$store.dispatch("panels/fetch", true)
+      })
     }
-  },
-  components: {
-    guests
   }
 }
 </script>
