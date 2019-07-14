@@ -1,12 +1,15 @@
 <template>
   <div class="button-wrapper">
     <b-btn v-if="showButton" size="sm" :variant="variant" @click="showModal" v-b-tooltip.hover :title="title">
-      <slot name="anhor"></slot>
+      <slot></slot>
     </b-btn>
 
     <b-modal ref="modal" :size="size" :title="title" hide-footer>
-      <vue-form-generator :schema="schema" :model="value" ref="nform"></vue-form-generator>
+      <vue-form-generator :schema="schema" :model="value" ref="nform" :options="options"></vue-form-generator>
+
+      <input type="submit" value="Zapisz" @click="submitHandler" class="btn btn-primary">
       <b-btn variant="danger" @click="hide">Anuluj</b-btn>
+
       <div v-show="isBusy" class="modal-spiner">
         <icon name="sync" scale="2" spin></icon>
       </div>
@@ -44,7 +47,10 @@
     data () {
       return {
         isBusy: true,
-        withLoading: this.fetchContent && true
+        withLoading: this.fetchContent && true,
+        options: {
+          validateAfterChanged: true
+        }
       }
     },
     methods: {
@@ -57,10 +63,15 @@
             this.isBusy = false
           })
         } else {
-          this.value.reset()
+          this.$emit("input", {})
         }
       },
-      hide () { this.$refs.modal.hide() }
+      hide () { this.$refs.modal.hide() },
+      submitHandler () {
+        if (this.$refs.nform.validate()) {
+          this.$emit("submit", this, this.value)
+        }
+      }
     }
   }
 </script>

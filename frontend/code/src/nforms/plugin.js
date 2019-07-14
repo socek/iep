@@ -1,4 +1,4 @@
-import VueFormGenerator from "vue-form-generator/dist/vfg-core.js"
+import VueFormGenerator from "vue-form-generator/dist/vfg.js"
 import fieldDatetime from "./datetime"
 import dialogform from "./dialog"
 

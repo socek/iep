@@ -2,18 +2,18 @@
   <ndialogform
     title="Edytuj konwent"
     :fetchContent="fetchContent"
-    ref="dialog"
     v-model="form"
     :schema="schema"
-    @submit="onSubmit">
-    <template slot="anhor">
-      <icon name="edit"></icon>
-    </template>
+    @submit="submitHandler">
+
+    <icon name="edit"></icon>
+
   </ndialogform>
 </template>
 
 <script>
 import conventResource from "@/conventions/resource"
+import schema from "./schema"
 
 export default {
   props: ["convention_uid"],
@@ -25,46 +25,17 @@ export default {
         start_date: "",
         end_date: ""
       },
-      schema: {
-        fields: [{
-          type: "input",
-          inputType: "text",
-          label: "Nazwa",
-          model: "name",
-          readonly: false,
-          featured: false,
-          disabled: false
-        }, {
-          type: "datetime",
-          label: "Początek",
-          model: "start_date",
-          readonly: false,
-          featured: false,
-          disabled: false
-        }, {
-          type: "datetime",
-          label: "Zakończenie",
-          model: "end_date",
-          readonly: false,
-          featured: false,
-          disabled: false
-        }, {
-          type: "submit",
-          buttonText: "Zapisz",
-          onSubmit: this.submitHandler
-        }]
-      },
-      resource: conventResource(this)
+      resource: conventResource(this),
+      schema
     }
   },
   methods: {
     fetchContent () {
       return this.resource.get({convention_uid: this.convention_uid})
     },
-    submitHandler (data) {
-      console.log(event)
+    submitHandler (dialog, data) {
       conventResource(this).update({convention_uid: this.convention_uid}, data).then((response) => {
-        this.$refs.dialog.hide()
+        dialog.hide()
         this.$store.dispatch("conventions/fetchConventions")
       })
     }
