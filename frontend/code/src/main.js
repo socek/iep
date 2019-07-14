@@ -8,7 +8,6 @@ import VueResource from "vue-resource"
 import Icon from "vue-awesome/components/Icon"
 import datePicker from "vue-bootstrap-datetimepicker"
 import vSelect from "vue-select"
-import VueFormGenerator from "vue-form-generator/dist/vfg-core.js"
 
 // Local imports
 import App from "@/App"
@@ -16,6 +15,7 @@ import router from "@/routing"
 import store from "@/store"
 import form from "@/forms/plugin"
 import auth from "@/auth/plugin"
+import nform from "@/nforms/plugin"
 
 // Style imports
 import "vue-form-generator/dist/vfg-core.css"
@@ -31,7 +31,8 @@ Vue.use(BootstrapVue)
 Vue.use(VueResource)
 Vue.use(datePicker)
 Vue.component("v-select", vSelect)
-Vue.use(VueFormGenerator)
+
+Vue.use(nform)
 
 // Local plugins
 Vue.use(form)
