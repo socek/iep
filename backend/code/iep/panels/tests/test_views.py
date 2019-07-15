@@ -41,8 +41,6 @@ class TestPanelsView(ViewFixture):
             "name": "Name",
             "description": "Description",
             "additional": "Additional",
-            "creator": "Creator",
-            "room": "101",
         }
 
         assert view.put() == {"is_success": True, "uid": msave.return_value}
@@ -118,6 +116,7 @@ class TestPanelView(ViewFixture):
         assert view.get() == {
             "uid": uid.hex,
             "name": "my new panel",
+            "guests_uids": []
         }
 
     def test_patch(self, view, mrequest, mupdate_by_uid):
@@ -130,8 +129,6 @@ class TestPanelView(ViewFixture):
             "name": "Name",
             "description": "Description",
             "additional": "Additional",
-            "creator": "Creator",
-            "room": "101",
         }
 
         view.patch()
@@ -139,9 +136,7 @@ class TestPanelView(ViewFixture):
         mupdate_by_uid.assert_called_once_with(
             uid,
             {
-                "creator": "Creator",
                 "additional": "Additional",
-                "room": "101",
                 "name": "Name",
                 "description": "Description",
             },
