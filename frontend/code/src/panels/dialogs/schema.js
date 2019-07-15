@@ -51,8 +51,9 @@ export default (guestMethod) => {
         validator: validators.required,
         selectOptions: {
           multiple: true,
-          key: "name",
+          key: "uid",
           label: "name",
+          trackBy: "uid",
           searchable: true,
           clearOnSelect: false,
           closeOnSelect: false
