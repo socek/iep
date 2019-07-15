@@ -45,7 +45,7 @@ export default (guestMethod) => {
       }, {
         type: "vueMultiSelect",
         model: "guests",
-        label: "Goście",
+        label: "Goście / Twórcy programu",
         placeholder: "Wybierz gości",
         required: false,
         validator: validators.required,
