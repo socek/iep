@@ -1,4 +1,4 @@
-import roomResource from '@/rooms/resource'
+import roomResource from "@/rooms/resource"
 
 export default {
   namespaced: true,
@@ -34,7 +34,7 @@ export default {
       if (refresh || !fetched) {
         let resource = roomResource(state.rootState.vue)
         resource.list().then((response) => {
-          state.commit('set', response.data)
+          state.commit("set", response.data)
         })
       }
     }

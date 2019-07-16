@@ -169,3 +169,7 @@ main {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.multiselect__content {
+  border: 1px solid red;
+}

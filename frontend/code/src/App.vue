@@ -40,32 +40,32 @@
 </template>
 
 <script>
-  import login from '@/auth/login'
-  import register from '@/auth/register'
-  import sidebar from '@/sidebar/sidebar'
+  import login from "@/auth/login"
+  import register from "@/auth/register"
+  import sidebar from "@/sidebar/sidebar"
 
   export default {
     methods: {
       isConventionListActive () {
-        return this.$route.name === 'ConventionList'
+        return this.$route.name === "ConventionList"
       }
     },
     computed: {
       activeConvention () {
-        return this.$store.getters['conventions/isActive']
+        return this.$store.getters["conventions/isActive"]
       },
       isAuthenticated () {
-        return this.$store.getters['auth/isAuthenticated']
+        return this.$store.getters["auth/isAuthenticated"]
       },
       isSidebarActive () {
-        return this.$store.getters['auth/isAuthenticated'] && this.$store.state.conventions.active !== null
+        return this.$store.getters["auth/isAuthenticated"] && this.$store.state.conventions.active !== null
       }
     },
     beforeCreate () {
-      this.$store.commit('init', this)
-      this.$store.dispatch('conventions/fetchConventions')
+      this.$store.commit("init", this)
+      this.$store.dispatch("conventions/fetchConventions")
     },
-    name: 'app',
+    name: "app",
     components: {
       login,
       register,

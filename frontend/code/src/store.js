@@ -1,11 +1,12 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue"
+import Vuex from "vuex"
 
-import auth from '@/auth/store'
-import conventions from '@/conventions/store'
-import grid from '@/grid/store'
-import rooms from '@/rooms/store'
-import panels from '@/panels/store'
+import auth from "@/auth/store"
+import conventions from "@/conventions/store"
+import grid from "@/grid/store"
+import rooms from "@/rooms/store"
+import panels from "@/panels/store"
+import guests from "@/guests/store"
 
 Vue.use(Vuex)
 
@@ -31,6 +32,7 @@ export default new Vuex.Store({
     conventions,
     grid,
     rooms,
-    panels
+    panels,
+    guests
   }
 })

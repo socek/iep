@@ -3,6 +3,7 @@ from sapp.plugins.pyramid.routing import Routing
 from iep.auth.routing import auth_routing
 from iep.conventions.routing import conventions_routing
 from iep.grid.routing import panel_times_routing
+from iep.guests.routing import guests_routing
 from iep.panels.routing import panels_routing
 from iep.rooms.routing import rooms_routing
 
@@ -14,3 +15,4 @@ class IAPRouting(Routing):
         rooms_routing(self)
         conventions_routing(self)
         panel_times_routing(self)
+        guests_routing(self)

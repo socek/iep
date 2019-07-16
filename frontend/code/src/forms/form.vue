@@ -13,7 +13,7 @@
     props: {
       id: {
         type: String,
-        default: ''
+        default: ""
       },
       showCancel: {
         type: Boolean,
@@ -21,7 +21,7 @@
       },
       okButtonLabel: {
         type: String,
-        default: 'Zapisz'
+        default: "Zapisz"
       },
       value: {
         type: Object,

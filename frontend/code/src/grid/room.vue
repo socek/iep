@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  props: ['room']
+  props: ["room"]
 }
 </script>
 

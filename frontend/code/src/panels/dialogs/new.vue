@@ -1,44 +1,52 @@
 <template>
-  <dialogform title="Nowy panel" ref="dialog" v-model="form" @submit="onSubmit">
+  <ndialogform
+    title="Nowy panel"
+    v-model="form"
+    :schema="schema"
+    @submit="submitHandler">
 
-    <template slot="anhor">
-      <icon name="plus-circle" />
-    </template>
-
-    <template slot="content">
-      <text-input v-model="form.name" label="Tytuł" placeholder="Tytuł"></text-input>
-      <text-input v-model="form.description" label="Opis" placeholder="Opis widoczny w programie konwentu"></text-input>
-      <text-input v-model="form.additional" label="Dodatkowy opis" placeholder="Dodatkowy opis widoczny tylko dla obsługi"></text-input>
-      <text-input v-model="form.minutes" label="Czas trwania" placeholder="W minutach"></text-input>
-    </template>
-  </dialogform>
+    <icon name="plus-circle" />
+  </ndialogform>
 </template>
 
 <script>
-import panelResource from '@/panels/resource'
-import form from '@/forms'
+import panelResource from "@/panels/resource"
+import guests from "@/panels/parts/guests"
+import schema from "./schema"
 
 export default {
   data () {
     return {
-      form: form({
-        name: '',
-        description: '',
-        additional: '',
-        minutes: ''
-      })
+      form: {
+        name: "",
+        description: "",
+        additional: "",
+        minutes: "",
+        guests: []
+      },
+      schema: schema(this.guestMethod)
     }
   },
   methods: {
-    onSubmit (form) {
-      form.submit(
-        () => panelResource(this).create({}, form.toData()),
-        (response) => {
-          this.$refs.dialog.hide()
-          this.$store.dispatch('panels/fetch', true)
-        }
-      )
+    guestMethod (form) {
+      return this.$store.getters["guests/getGuests"]
+    },
+    submitHandler (dialog, form) {
+      form = Object.assign({}, form)
+      let guestUids = []
+      for (let guest of form.guests) {
+        guestUids.push(guest.uid)
+      }
+      form.guests_uids = guestUids
+      delete form.guests
+      panelResource(this).create({}, form).then((response) => {
+        dialog.hide()
+        this.$store.dispatch("panels/fetch", true)
+      })
     }
+  },
+  components: {
+    guests
   }
 }
 </script>

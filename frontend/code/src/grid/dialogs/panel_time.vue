@@ -17,20 +17,20 @@
 </template>
 
 <script>
-import moment from 'moment'
-import gridResource from '@/grid/resource'
-import form from '@/forms'
+import moment from "moment"
+import gridResource from "@/grid/resource"
+import form from "@/forms"
 
 export default {
   data () {
     return {
-      val: '',
+      val: "",
       is_conflict: false,
-      panelUid: '',
-      panelName: '',
+      panelUid: "",
+      panelName: "",
       form: form({
         room_uid: {},
-        begin_date: moment(this.$store.getters['conventions/isActive'].start_date).format('YYYY-MM-DD HH:mm:ss')
+        begin_date: moment(this.$store.getters["conventions/isActive"].start_date).format("YYYY-MM-DD HH:mm:ss")
       })
     }
   },
@@ -48,10 +48,10 @@ export default {
   methods: {
     show (panelUid) {
       this.panelUid = panelUid
-      this.panelName = this.$store.getters['panels/getPanel'](panelUid).name
-      this.val = ''
-      this.form.room_uid.value = ''
-      this.form.begin_date.value = ''
+      this.panelName = this.$store.getters["panels/getPanel"](panelUid).name
+      this.val = ""
+      this.form.room_uid.value = ""
+      this.form.begin_date.value = ""
       this.$refs.dialog.showModal()
     },
     fetchContent () {
@@ -77,13 +77,13 @@ export default {
         },
         (response) => {
           this.$refs.dialog.hide()
-          this.$store.dispatch('conventions/fetchConventions')
+          this.$store.dispatch("conventions/fetchConventions")
         },
         (response) => {
           if (response.status === 409) {
             this.is_conflict = true
           } else {
-            console.log('Unhandled exception', response)
+            console.log("Unhandled exception", response)
           }
         }
       )

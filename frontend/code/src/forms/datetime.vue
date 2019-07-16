@@ -7,11 +7,11 @@
 </template>
 
 <script>
-  import {Datetime} from 'vue-datetime'
+  import {Datetime} from "vue-datetime"
   // You need a specific loader for CSS files
-  import 'vue-datetime/dist/vue-datetime.css'
-  // import datetime from 'vuejs-datetimepicker'
-  import base from '@/forms/base'
+  import "vue-datetime/dist/vue-datetime.css"
+  // import datetime from "vuejs-datetimepicker"
+  import base from "@/forms/base"
 
   export default {
     extends: base,

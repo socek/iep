@@ -7,13 +7,13 @@
 </template>
 
 <script>
-  import base from '@/forms/base'
+  import base from "@/forms/base"
   export default {
     extends: base,
     data () {
       return {
         options: {
-          format: 'YYYY-MM-DD',
+          format: "YYYY-MM-DD",
           showTodayButton: true,
           useCurrent: true
         }

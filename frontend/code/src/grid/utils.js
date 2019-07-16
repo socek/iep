@@ -1,6 +1,6 @@
-import oryginalMoment from 'moment'
+import oryginalMoment from "moment"
 
-const timeFormat = 'YYYY-MM-DD HH:mm'
+const timeFormat = "YYYY-MM-DD HH:mm"
 const interval = 30
 const minuteHeight = 2
 

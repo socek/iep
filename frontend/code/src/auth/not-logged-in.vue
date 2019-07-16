@@ -11,15 +11,15 @@
 </template>
 
 <script>
-import authResource from '@/auth/resource'
-import form from '@/forms'
+import authResource from "@/auth/resource"
+import form from "@/forms"
 
 export default {
   data () {
     return {
       form: form({
-        email: '',
-        password: ''
+        email: "",
+        password: ""
       }),
       resource: authResource(this)
     }
@@ -29,8 +29,8 @@ export default {
       form.submit(
         () => this.resource.login({}, form.toData()),
         (response) => {
-          this.$store.commit('auth/logIn', response.body.jwt)
-          this.$router.push({name: 'ConventionlList'})
+          this.$store.commit("auth/logIn", response.body.jwt)
+          this.$router.push({name: "ConventionlList"})
         }
       )
     }

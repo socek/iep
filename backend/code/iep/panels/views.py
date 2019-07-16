@@ -47,7 +47,8 @@ class PanelView(BaseConventionView):
         """
         Get panel data.
         """
-        return PanelSchema().dump(self._get_panel())
+        panel = self._get_panel()
+        return PanelSchema().dump(panel)
 
     def patch(self):
         """

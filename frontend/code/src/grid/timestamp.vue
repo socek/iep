@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import {interval, minuteHeight} from '@/grid/utils'
+import {interval, minuteHeight} from "@/grid/utils"
 
 export default {
-  props: ['timestamp'],
+  props: ["timestamp"],
   methods: {
     getStyle () {
       return {
-        height: interval * minuteHeight + 'px'
+        height: interval * minuteHeight + "px"
       }
     }
   }

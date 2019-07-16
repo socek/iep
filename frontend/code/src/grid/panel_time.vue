@@ -8,22 +8,22 @@
 </template>
 
 <script>
-import {moment, interval, minuteHeight} from '@/grid/utils'
-import {duration} from 'moment'
-import deleteDialog from '@/grid/dialogs/delete'
-import panelTime from '@/grid/dialogs/panel_time'
+import {moment, interval, minuteHeight} from "@/grid/utils"
+import {duration} from "moment"
+import deleteDialog from "@/grid/dialogs/delete"
+import panelTime from "@/grid/dialogs/panel_time"
 
 const columnStart = 2
 const rowStart = 2
 
 export default {
-  props: ['panelTime'],
+  props: ["panelTime"],
   data () {
     return {
       componentKey: 0,
-      rooms: this.$store.getters['rooms/getRooms'],
-      panels: this.$store.getters['panels/getPanels'],
-      timestamps: this.$store.getters['grid/getTimestamps']
+      rooms: this.$store.getters["rooms/getRooms"],
+      panels: this.$store.getters["panels/getPanels"],
+      timestamps: this.$store.getters["grid/getTimestamps"]
     }
   },
   methods: {
@@ -49,7 +49,7 @@ export default {
       let getMarginTop = (beginDate, gridRowStart) => {
         let gridStart = moment(this.timestamps[gridRowStart - rowStart])
         let minutes = duration(beginDate.diff(gridStart)).asMinutes()
-        return minutes * minuteHeight + 'px'
+        return minutes * minuteHeight + "px"
       }
 
       let getColumnStart = () => {
@@ -64,7 +64,7 @@ export default {
 
       let getHeight = (beginDate, endDate) => {
         let minutes = duration(endDate.diff(beginDate)).asMinutes()
-        return (minutes * minuteHeight) + 'px'
+        return (minutes * minuteHeight) + "px"
       }
 
       let getGridRowEnd = (beginDate, endDate, gridRowStart) => {

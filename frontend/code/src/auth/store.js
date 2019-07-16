@@ -5,7 +5,7 @@ export default {
   },
   getters: {
     isAuthenticated (state) {
-      return state.jwt !== null && state.jwt !== 'null'
+      return state.jwt !== null && state.jwt !== "null"
     },
     jwt (state) {
       return state.jwt
@@ -14,18 +14,18 @@ export default {
   mutations: {
     logIn (state, jwt) {
       state.jwt = jwt
-      localStorage.setItem('jwt', jwt)
+      localStorage.setItem("jwt", jwt)
     },
     logOut (state) {
       state.jwt = null
-      localStorage.setItem('jwt', null)
+      localStorage.setItem("jwt", null)
     }
   },
   actions: {
     tryAutoLogin ({state, commit}) {
-      const jwt = localStorage.getItem('jwt')
+      const jwt = localStorage.getItem("jwt")
       if (jwt) {
-        commit('logIn', jwt)
+        commit("logIn", jwt)
       }
     }
   }

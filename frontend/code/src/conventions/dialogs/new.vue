@@ -1,42 +1,35 @@
 <template>
-  <dialogform title="Nowy konwent" ref="dialog" v-model="form" @submit="onSubmit">
-
-    <template slot="anhor">
-      <icon name="plus-circle" />
-    </template>
-
-    <template slot="content">
-      <text-input v-model="form.name" label="Nazwa" placeholder="Imladris"></text-input>
-      <datetime-input v-model="form.start_date" label="Początek"></datetime-input>
-      <datetime-input v-model="form.end_date" label="Koniec"></datetime-input>
-    </template>
-  </dialogform>
+  <ndialogform
+    title="Nowy konwent"
+    v-model="form"
+    :schema="schema"
+    @submit="submitHandler"
+  >
+    <icon name="plus-circle" />
+  </ndialogform>
 </template>
 
 <script>
-import conventResource from '@/conventions/resource'
-import form from '@/forms'
+import conventResource from "@/conventions/resource"
+import schema from "./schema"
 
 export default {
   data () {
     return {
-      val: '',
-      form: form({
-        name: '',
-        start_date: '',
-        end_date: ''
-      })
+      form: {
+        name: "",
+        start_date: "",
+        end_date: ""
+      },
+      schema
     }
   },
   methods: {
-    onSubmit (form) {
-      form.submit(
-        () => conventResource(this).create({}, form.toData()),
-        (response) => {
-          this.$refs.dialog.hide()
-          this.$store.dispatch('conventions/fetchConventions')
-        }
-      )
+    submitHandler (dialog, data) {
+      conventResource(this).create({}, data).then((response) => {
+        dialog.hide()
+        this.$store.dispatch("conventions/fetchConventions")
+      })
     }
   }
 }
