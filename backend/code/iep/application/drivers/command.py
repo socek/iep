@@ -16,13 +16,16 @@ class SaveNewForModel(BaseForModel):
         save_new(name="my name is", surname="slimshady")
     """
 
-    def __call__(self, *args, **kwargs):
+    def _set_kwargs_in_obj(self, kwargs):
         obj = self.model()
         for key, value in kwargs.items():
             if not hasattr(obj, key):
                 raise AttributeError(f'{obj.__class__.__name__}.{key} is not valid parameter')
             setattr(obj, key, value)
+        return obj
 
+    def __call__(self, *args, **kwargs):
+        obj = self._set_kwargs_in_obj(kwargs)
         uid = self._save(obj)
         return uid
 
