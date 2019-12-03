@@ -3,12 +3,13 @@ from sapp import Decorator
 from iep import app
 from iep.application.drivers.command import DeleteByIdForModel
 from iep.application.drivers.command import ForceDeleteForModel
+from iep.application.drivers.command import SaveNewForModel
 from iep.guest2panel.drivers.dbmodels import Guest2PanelData
 
 from .dbmodels import PanelData
 
 
-class SaveNewForModel(object):
+class SaveNewForModel(SaveNewForModel):
     """
     Save new row's data to the database. Returns new uid of the object.
 
@@ -16,25 +17,21 @@ class SaveNewForModel(object):
         save_new(name="my name is", surname="slimshady")
     """
 
+    def __init__(self):
+        super().__init__(PanelData)
+
     def __call__(self, *args, **kwargs):
         guests_uids = kwargs.pop("guests_uids", [])
-        obj = PanelData()
-        for key, value in kwargs.items():
-            if not hasattr(obj, key):
-                raise AttributeError(
-                    f"{obj.__class__.__name__}.{key} is not valid parameter"
-                )
-            setattr(obj, key, value)
-
+        obj = self._set_kwargs_in_obj(kwargs)
         uid = self._save(obj, guests_uids)
         return uid
 
     @Decorator(app, "dbsession")
-    def _save(self, obj, guest_uids, dbsession):
+    def _save(self, obj, guests_uids, dbsession):
         dbsession.add(obj)
         dbsession.flush()
 
-        for guest_uid in guest_uids:
+        for guest_uid in guests_uids:
             link = Guest2PanelData()
             link.convention_uid = obj.convention_uid
             link.panel_uid = obj.uid
@@ -98,7 +95,18 @@ class UpdateByIdForModel(object):
         dbsession.commit()
 
 
+class ForceDeleteForPanel(ForceDeleteForModel):
+    def __init__(self):
+        self.model = PanelData
+
+    @Decorator(app, "dbsession")
+    def __call__(self, uid, dbsession):
+        dbsession.query(Guest2PanelData).filter(Guest2PanelData.panel_uid == uid).delete()
+        dbsession.query(self.model).filter(self.model.uid == uid).delete()
+        dbsession.commit()
+
+
 save_new = SaveNewForModel()
 update_by_uid = UpdateByIdForModel()
 delete_by_uid = DeleteByIdForModel(PanelData)
-force_delete = ForceDeleteForModel(PanelData)
+force_delete = ForceDeleteForPanel()

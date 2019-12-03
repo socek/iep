@@ -113,8 +113,8 @@ class TestConventionView(ViewFixture):
         assert view.get() == {
             "uid": uid.hex,
             "name": "my new convention",
-            "start_date": "2018-10-10T10:00:00+00:00",
-            "end_date": "2018-10-12T10:00:00+00:00",
+            "start_date": "2018-10-10T10:00:00",
+            "end_date": "2018-10-12T10:00:00",
         }
 
     def test_patch(self, view, mrequest, mupdate_by_uid):
